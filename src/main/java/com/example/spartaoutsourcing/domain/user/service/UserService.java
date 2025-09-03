@@ -1,7 +1,6 @@
 package com.example.spartaoutsourcing.domain.user.service;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
-import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.user.dto.UserResponse;
 import com.example.spartaoutsourcing.domain.user.entity.User;
@@ -18,12 +17,12 @@ public class UserService {
     /**
      * 사용자 조회
      *
-     * @param authUser 사용자 요청
+     * @param userId 사용자 아이디
      * @return 사용자 응답 반환
      */
     @Transactional(readOnly = true)
-    public UserResponse getUser(AuthUserRequest authUser) {
-        User user=  userRepository.findById(authUser.getId()).orElseThrow(
+    public UserResponse getUserById(Long userId) {
+        User user =  userRepository.findById(userId).orElseThrow(
                 ()-> new GlobalException(ErrorCode.USER_NOT_FOUND)
         );
 
