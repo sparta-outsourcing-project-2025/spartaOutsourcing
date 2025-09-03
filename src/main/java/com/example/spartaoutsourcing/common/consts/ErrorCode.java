@@ -14,7 +14,13 @@ public enum ErrorCode {
 
     // 기본적으로 만든 내용입니다 나중에 커스텀 합시다~~
     NOT_FOUND("데이터가 없습니다.", HttpStatus.NOT_FOUND),
-    FORBIDDEN("권한이 없습니다.", HttpStatus.FORBIDDEN);
+    FORBIDDEN("권한이 없습니다.", HttpStatus.FORBIDDEN),
+
+    // 유저
+    USER_NOT_FOUND("유저를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+
+    // 어노테이션
+    AUTH_ANNOTATION_MISMATCH_TYPE("@Auth와 AuthUser 타입은 함께 사용되어야 합니다",HttpStatus.INTERNAL_SERVER_ERROR),;
 
     private final String message;
     private final HttpStatus httpStatus;

@@ -1,49 +1,43 @@
 package com.example.spartaoutsourcing.domain.user.entity;
 
-
-import com.example.spartaoutsourcing.common.entity.BaseEntity;
+import com.example.spartaoutsourcing.common.entity.AuditableEntity;
+import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@NoArgsConstructor
-@Table(name = "users")
-public class User extends BaseEntity {
-
-    @Column(length = 20)
+@Table(name="users")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class User extends AuditableEntity {
+    @Column(nullable = false, length = 20)
     private String username;
 
-    @Column(length = 30/*, unique = true*/)      //test를 위해 임시 주석 처리
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(length = 100)
-
+    @Column(nullable = false)
     private String password;
 
-    @Column(length = 100)
+    @Column(nullable = false, length = 50)
     private String name;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private UserRole role;
 
-    // 생성자 private으로 막기
-    private User(String username, String email, String password, String name, UserRole userRole) {
+    private User (String username, String email, String password, String name, UserRole role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.name = name;
-        this.userRole = userRole;
+        this.role = role;
     }
 
-    // 정적 팩토리 메서드: 일반 회원 생성
-    public static User createUser(String username, String email, String password, String name) {
-        return new User(username, email, password, name, UserRole.USER);
+    public static User of(String username, String email, String password, String name, UserRole role)
+    {
+        return new User(username,email, password, name, role);
     }
-
-    // 정적 팩토리 메서드: 관리자 생성
-//    public static User createAdmin(String username, String email, String password, String name) {
-//        return new User(username, email, password, name, UserRole.ADMIN);
-//    }
 }

@@ -28,6 +28,6 @@ public class AuthController {
     @PostMapping("/api/auth/login")
     public GlobalApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResponse response = authService.login(loginRequest);
-        return GlobalApiResponse.of(SuccessCode.SUCCESS, response);
+        return GlobalApiResponse.of(SuccessCode.SUCCESS_LOGIN, response);
     }
 }
