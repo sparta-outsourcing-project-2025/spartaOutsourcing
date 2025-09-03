@@ -12,16 +12,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "members")
 @EntityListeners(AuditingEntityListener.class)
 public class Member extends AuditableEntity {
-
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long memberId;
 
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="user_id")
@@ -30,10 +25,6 @@ public class Member extends AuditableEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @JoinColumn(name="team_id")
     private Team team;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
 
     public Member(Team team, User user){
         this.team = team;

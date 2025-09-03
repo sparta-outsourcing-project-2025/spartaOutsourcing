@@ -26,9 +26,7 @@ import java.util.List;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final MemberRepository memberRepository;
 
-    //팀 생성
     @Transactional
     public TeamResponse save(TeamRequest teamRequest) {
 

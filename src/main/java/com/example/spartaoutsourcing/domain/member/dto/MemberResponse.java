@@ -2,6 +2,7 @@ package com.example.spartaoutsourcing.domain.member.dto;
 
 
 import com.example.spartaoutsourcing.domain.member.entity.Member;
+import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,11 +17,10 @@ public class MemberResponse {
     private String username;
     private String name;
     private String email;
-    // private Role role;
-    private LocalDate createdAt;
+    private UserRole role;
 
-    public static MemberResponse of(Long id, String username, String name, String email, LocalDate createdAt) {
-        return new MemberResponse(id, username, name, email, createdAt);
+    public static MemberResponse of(Long id, String username, String name, String email, UserRole role) {
+        return new MemberResponse(id, username, name, email, role);
     }
 
 }
