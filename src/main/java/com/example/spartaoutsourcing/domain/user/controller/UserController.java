@@ -17,8 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
 
+    /**
+     * 현재 사용자 정보 조회
+     * @param authUser 로그인 중인 사용자 요청
+     * @return 공통 응답과 사용자 응답 반환
+     */
     @GetMapping("/me")
-    public GlobalApiResponse<UserResponse> getUserProfile(@Auth AuthUserRequest authUser) {
-        return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_USER,userService.getUserProfile(authUser));
+    public GlobalApiResponse<UserResponse> getUser(@Auth AuthUserRequest authUser) {
+        return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_USER,userService.getUser(authUser));
     }
 }

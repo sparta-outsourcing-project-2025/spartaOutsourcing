@@ -13,7 +13,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
-
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean hasAuthAnnotation=parameter.getParameterAnnotation(Auth.class) != null;
