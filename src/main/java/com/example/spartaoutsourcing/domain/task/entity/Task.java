@@ -1,6 +1,5 @@
 package com.example.spartaoutsourcing.domain.task.entity;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import com.example.spartaoutsourcing.common.entity.AuditableEntity;
@@ -16,14 +15,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @Table(name = "tasks")
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Task extends AuditableEntity {
 
@@ -43,12 +40,13 @@ public class Task extends AuditableEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	public Task(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate, TaskPriority taskPriority) {
+	private Task(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate, TaskPriority taskPriority, User user) {
 		this.title = title;
 		this.description = description;
 		this.taskStatus = taskStatus;
 		this.dueDate = dueDate;
 		this.taskPriority = taskPriority;
+		this.user = user;
 	}
 
 	public static Task of(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate,

@@ -20,7 +20,10 @@ public enum ErrorCode {
     USER_NOT_FOUND("유저를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
     // 어노테이션
-    AUTH_ANNOTATION_MISMATCH_TYPE("@Auth와 AuthUser 타입은 함께 사용되어야 합니다",HttpStatus.INTERNAL_SERVER_ERROR),;
+    AUTH_ANNOTATION_MISMATCH_TYPE("@Auth와 AuthUser 타입은 함께 사용되어야 합니다",HttpStatus.INTERNAL_SERVER_ERROR),
+
+    // task
+    TASK_NOT_FOUND("작업을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String message;
     private final HttpStatus httpStatus;
