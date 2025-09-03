@@ -13,9 +13,9 @@ public class UserResponse {
     private final String role;
     private final LocalDateTime createdAt;
 
-    private UserResponse(Long id, String name, String email, String role, LocalDateTime createdAt) {
+    private UserResponse(Long id, String username, String name, String email, String role, LocalDateTime createdAt) {
         this.id = id;
-        this.username = name.replaceAll(" ", "").toLowerCase();
+        this.username = username;
         this.name = name;
         this.email = email;
         this.role = role;
@@ -25,6 +25,7 @@ public class UserResponse {
     public static UserResponse from(User user) {
         return new UserResponse(
                 user.getId(),
+                user.getUsername(),
                 user.getName(),
                 user.getEmail(),
                 user.getRole().toString(),
