@@ -13,6 +13,7 @@ import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
 import com.example.spartaoutsourcing.domain.task.repository.TaskRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
+import com.example.spartaoutsourcing.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,11 +23,15 @@ import lombok.RequiredArgsConstructor;
 public class TaskService {
 
 	private final TaskRepository taskRepository;
-	private final UserRepository userRepository;
+	private final UserService userService;
 
+	/**
+	* 사용자 Task 생성
+	 * @RequestBody Task 요청 정보
+	 * @return 공통 응답과 Task 생성 응답 반환
+	*/
 	public TaskResponse save(TaskRequest taskRequest) {
-		User user = userRepository.findById(taskRequest.getAssigneeId())
-			.orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+		User user = userService.getUserById(taskRequest.getAssigneeId());
 
 		Task task = Task.of(taskRequest.getTitle(), taskRequest.getDescription(), TaskStatus.TODO,
 			taskRequest.getDueDate(), taskRequest.getPriority(), user);

@@ -24,7 +24,7 @@ public class TaskController {
 	private final TaskService taskService;
 
 	@PostMapping
-	public GlobalApiResponse<TaskResponse> save(@Auth AuthUserRequest authUserRequest, @Valid @RequestBody TaskRequest taskRequest) {
+	public GlobalApiResponse<TaskResponse> save(@Valid @RequestBody TaskRequest taskRequest) {
 		TaskResponse save = taskService.save(taskRequest);
 		return GlobalApiResponse.of(SuccessCode.TASK_CREATED, save);
 	}
