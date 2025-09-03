@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @Table(name="users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends AuditableEntity {
+    @Column(nullable = false, length = 20)
+    private String username;
+
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -25,15 +28,16 @@ public class User extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private User (String email, String password, String name, UserRole role) {
+    private User (String username, String email, String password, String name, UserRole role) {
+        this.username = username;
         this.email = email;
         this.password = password;
         this.name = name;
         this.role = role;
     }
 
-    public static User of(String email, String password, String name, UserRole role)
+    public static User of(String username, String email, String password, String name, UserRole role)
     {
-        return new User(email, password, name, role);
+        return new User(username,email, password, name, role);
     }
 }
