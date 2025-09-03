@@ -14,6 +14,8 @@ public enum SuccessCode {
     TEAM_CREATED(201, "팀 정보가 성공적으로 업데이트되었습니다.");
 
 
+    TASK_FIND(200, "Task를 조회했습니다.");
+
     private final int status;
     private final String message;
 }
