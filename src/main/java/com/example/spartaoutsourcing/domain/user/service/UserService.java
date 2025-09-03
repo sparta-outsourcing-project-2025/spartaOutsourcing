@@ -30,9 +30,6 @@ public class UserService {
         return UserResponse.from(user);
     }
 
-
-
-
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
