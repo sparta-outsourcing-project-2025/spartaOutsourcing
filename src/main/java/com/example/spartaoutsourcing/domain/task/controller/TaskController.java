@@ -1,5 +1,7 @@
 package com.example.spartaoutsourcing.domain.task.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,8 +26,14 @@ public class TaskController {
 	private final TaskService taskService;
 
 	@PostMapping
-	public GlobalApiResponse<TaskResponse> save(@Valid @RequestBody TaskRequest taskRequest) {
-		TaskResponse save = taskService.save(taskRequest);
+	public GlobalApiResponse<TaskResponse> save(@Auth AuthUserRequest authUserRequest, @Valid @RequestBody TaskRequest taskRequest) {
+		TaskResponse save = taskService.save(authUserRequest,taskRequest);
 		return GlobalApiResponse.of(SuccessCode.TASK_CREATED, save);
+	}
+
+	@GetMapping("/{taskId}")
+	public GlobalApiResponse<TaskResponse> getTask(@Auth AuthUserRequest authUserRequest, @PathVariable Long taskId) {
+		TaskResponse task = taskService.getTask(authUserRequest, taskId);
+		return GlobalApiResponse.of(SuccessCode.TASK_FIND, task);
 	}
 }
