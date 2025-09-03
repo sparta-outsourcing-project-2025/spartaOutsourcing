@@ -15,7 +15,7 @@ public class User extends BaseEntity {
     @Column(length = 20)
     private String username;
 
-    @Column(length = 30, unique = true)
+    @Column(length = 30/*, unique = true*/)      //test를 위해 임시 주석 처리
     private String email;
 
     @Column(length = 100)

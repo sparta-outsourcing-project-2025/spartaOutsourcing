@@ -2,6 +2,8 @@ package com.example.spartaoutsourcing.domain.auth.service;
 
 import com.example.spartaoutsourcing.common.config.JwtUtil;
 import com.example.spartaoutsourcing.common.config.PasswordEncoder;
+import com.example.spartaoutsourcing.common.consts.ErrorCode;
+import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.auth.dto.LoginRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.LoginResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.RegisterRequest;
@@ -23,6 +25,10 @@ public class AuthService {
     @Transactional
     public RegisterResponse register(RegisterRequest registerRequest) {
 
+        if (userRepository.existsByUsername(registerRequest.getUsername())) {
+            throw new GlobalException(ErrorCode.USERNAME_DUPLICATED);
+        }
+
         String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
         User userRole = User.createUser(
                 registerRequest.getUsername(),
@@ -42,17 +48,14 @@ public class AuthService {
         );
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByUsername(loginRequest.getUsername())
+                .orElseThrow(() -> new GlobalException(ErrorCode.LOGIN_CHECKED));
 
-        User user = userRepository.findByUsername(loginRequest.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("가입되지 않은 유저입니다."));
-
-        // 로그인 시 이메일과 비밀번호가 일치하지 않을 경우 401을 반환합니다.
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new GlobalException(ErrorCode.LOGIN_CHECKED);
         }
-
         String token = jwtUtil.createToken(user.getId(), user.getUsername());
 
         return new LoginResponse(token);

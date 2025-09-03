@@ -1,5 +1,7 @@
 package com.example.spartaoutsourcing.domain.auth.controller;
 
+import com.example.spartaoutsourcing.common.consts.SuccessCode;
+import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.LoginRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.LoginResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.RegisterRequest;
@@ -18,12 +20,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/api/auth/register")
-    public RegisterResponse register(@Valid @RequestBody RegisterRequest registerRequest) {
-        return authService.register(registerRequest);
+    public GlobalApiResponse<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        RegisterResponse response = authService.register(registerRequest);
+        return GlobalApiResponse.of(SuccessCode.CREATED, response);
     }
 
     @PostMapping("/api/auth/login")
-    public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {
-        return authService.login(loginRequest);
+    public GlobalApiResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        LoginResponse response = authService.login(loginRequest);
+        return GlobalApiResponse.of(SuccessCode.SUCCESS, response);
     }
 }
