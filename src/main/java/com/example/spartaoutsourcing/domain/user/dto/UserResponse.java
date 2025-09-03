@@ -8,16 +8,16 @@ import java.time.LocalDateTime;
 public class UserResponse {
     private final Long id;
     private final String username;
-    private final String name;
     private final String email;
+    private final String name;
     private final String role;
     private final LocalDateTime createdAt;
 
-    private UserResponse(Long id, String username, String name, String email, String role, LocalDateTime createdAt) {
+    private UserResponse(Long id, String username, String email, String name, String role, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
-        this.name = name;
         this.email = email;
+        this.name = name;
         this.role = role;
         this.createdAt = createdAt;
     }
@@ -26,8 +26,8 @@ public class UserResponse {
         return new UserResponse(
                 user.getId(),
                 user.getUsername(),
-                user.getName(),
                 user.getEmail(),
+                user.getName(),
                 user.getRole().toString(),
                 user.getCreatedAt()
         );
