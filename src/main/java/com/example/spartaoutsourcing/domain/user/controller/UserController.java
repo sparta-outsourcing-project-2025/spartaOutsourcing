@@ -24,6 +24,6 @@ public class UserController {
      */
     @GetMapping("/me")
     public GlobalApiResponse<UserResponse> getUser(@Auth AuthUserRequest authUser) {
-        return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_USER,userService.getUser(authUser));
+        return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_USER, userService.getUserResponseById(authUser.getId()));
     }
 }
