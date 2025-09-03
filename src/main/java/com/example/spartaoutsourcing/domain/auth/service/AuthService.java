@@ -10,7 +10,6 @@ import com.example.spartaoutsourcing.domain.auth.dto.RegisterRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.RegisterResponse;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.enums.UserRole;
-import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class AuthService {
     @Transactional
     public RegisterResponse register(RegisterRequest registerRequest) {
 
-        if (userService.existsByUsername(registerRequest.getUsername())) {
+        if (userService.existsUserByUsername(registerRequest.getUsername())) {
             throw new GlobalException(ErrorCode.USERNAME_DUPLICATED);
         }
 
@@ -41,7 +40,7 @@ public class AuthService {
         );
         User savedUser = userService.save(userRole);
 
-        return new RegisterResponse(
+        return RegisterResponse.of(
                 savedUser.getId(),
                 savedUser.getUsername(),
                 savedUser.getEmail(),
@@ -55,10 +54,10 @@ public class AuthService {
     public LoginResponse login(LoginRequest loginRequest) {
         User user = userService.findByUsername(loginRequest.getUsername());
 
-        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()) || !userService.existsByUsername(loginRequest.getUsername())) {
+        if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()) || !userService.existsUserByUsername(loginRequest.getUsername())) {
             throw new GlobalException(ErrorCode.LOGIN_CHECKED);
         }
-        String token = jwtUtil.createToken(user.getId(), user.getUsername());
+        String token = jwtUtil.createToken(user.getId(), user.getUsername(), user.getRole());
 
         return new LoginResponse(token);
     }

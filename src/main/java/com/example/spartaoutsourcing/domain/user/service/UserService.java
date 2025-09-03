@@ -63,17 +63,23 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public boolean existsUserByUsername(String username) {
-        return userRepository.existsByUsername(username);
+        return userRepository.existsUserByUsername(username);
     }
 
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
-    }
-
+    /**
+     * 회원가입한 User 정보를 저장
+     */
+    @Transactional(readOnly = true)
     public User save(User user) {
         return userRepository.save(user);
     }
 
+    /**
+     * 사용자가 존재하는지 닉네임으로 조회
+     * @param username 사용자 닉네임
+     * @return 존재하면 데이터를 가져온다
+     */
+    @Transactional(readOnly = true)
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new GlobalException(ErrorCode.LOGIN_CHECKED));
     }

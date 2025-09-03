@@ -1,5 +1,6 @@
 package com.example.spartaoutsourcing.common.config;
 
+import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,13 +34,18 @@ public class JwtUtil {
         key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public String createToken(Long userId, String username) {
+    public String createToken(Long userId, String email, UserRole userRole) {
         Date date = new Date();
 
+        /**
+         * 하나의 토큰안에 userId와 username을 담는다
+         * 담고 싶음 정보가 있다면 추가추가
+         */
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
-                        .claim("username", username)
+                        .claim("email", email)
+                        .claim("userRole", userRole)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘

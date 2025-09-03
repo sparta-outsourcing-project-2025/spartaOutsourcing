@@ -24,4 +24,9 @@ public class RegisterResponse {
         this.role = role;
         this.createdAt = createdAt;
     }
+
+    public static RegisterResponse of(Long id, String username, String email, String name, String role, LocalDateTime createdAt) {
+        return new RegisterResponse(id, username, email, name, role, createdAt);
+
+    }
 }

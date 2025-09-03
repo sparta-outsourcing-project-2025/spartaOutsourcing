@@ -1,5 +1,6 @@
 package com.example.spartaoutsourcing.common.config;
 
+import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -43,6 +44,7 @@ public class JwtFilter implements Filter {
             return;
         }
 
+
         String jwt = jwtUtil.substringToken(bearerJwt);
 
         try {
@@ -53,6 +55,12 @@ public class JwtFilter implements Filter {
                 sendErrorResponse(httpResponse, HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
                 return;
             }
+
+            UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
+
+            httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
+            httpRequest.setAttribute("email", claims.get("email"));
+            httpRequest.setAttribute("userRole", userRole);
 
             chain.doFilter(request, response);
         } catch (ExpiredJwtException e) {
