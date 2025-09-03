@@ -15,8 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
 
+    /**
+     * 사용자 조회
+     *
+     * @param authUser 사용자 요청
+     * @return 사용자 응답 반환
+     */
     @Transactional(readOnly = true)
-    public UserResponse getUserProfile(AuthUserRequest authUser) {
+    public UserResponse getUser(AuthUserRequest authUser) {
         User user=  userRepository.findById(authUser.getId()).orElseThrow(
                 ()-> new GlobalException(ErrorCode.USER_NOT_FOUND)
         );
