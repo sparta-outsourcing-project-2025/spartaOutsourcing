@@ -4,6 +4,8 @@ import com.example.spartaoutsourcing.domain.member.dto.MemberResponse;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import com.example.spartaoutsourcing.domain.member.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -32,5 +34,13 @@ public class TeamResponse {
                                 .toList()
                 )
                 .build();
+    public static TeamResponse of(
+            Long id,
+            String name,
+            String description,
+            LocalDateTime createdAt,
+            List<MemberResponse> members
+    ){
+        return new TeamResponse(id, name, description, createdAt, members);
     }
 }

@@ -4,6 +4,13 @@ import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
 import com.example.spartaoutsourcing.domain.team.dto.request.TeamRequest;
 import com.example.spartaoutsourcing.domain.team.dto.response.TeamResponse;
+import com.example.spartaoutsourcing.common.annotation.Auth;
+import com.example.spartaoutsourcing.common.consts.SuccessCode;
+import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
+import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
+import com.example.spartaoutsourcing.domain.team.dto.request.TeamRequest;
+import com.example.spartaoutsourcing.domain.team.dto.response.TeamResponse;
+import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.service.TeamService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +37,7 @@ public class TeamController {
     {
         List<TeamResponse> result = teamService.getTeams();
         return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_TEAM, result);
+        TeamResponse save = teamService.save(teamRequest);
+        return GlobalApiResponse.of(SuccessCode.TEAM_CREATED, save);
     }
 }

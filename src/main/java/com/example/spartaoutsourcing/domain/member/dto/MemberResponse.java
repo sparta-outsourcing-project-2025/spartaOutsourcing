@@ -9,11 +9,16 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+import lombok.Getter;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
-@Builder
 @AllArgsConstructor
 public class MemberResponse {
-    private Long id;
+    private Long Id;
     private String username;
     private String name;
     private String email;
@@ -31,4 +36,9 @@ public class MemberResponse {
                 .createdAt(member.getCreatedAt())
                 .build();
     }
+
+    public static MemberResponse of(Long id, String username, String name, String email, UserRole role) {
+        return new MemberResponse(id, username, name, email, role);
+    }
+
 }
