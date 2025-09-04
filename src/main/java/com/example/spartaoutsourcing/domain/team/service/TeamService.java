@@ -30,9 +30,11 @@ public class TeamService {
     @Transactional
     public TeamResponse save(TeamRequest teamRequest) {
 
-        List<Member> member = new ArrayList<>();
-        List<MemberResponse> members = new ArrayList<>();
-        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), member);
+        if(teamRepository.existsByName(teamRequest.getName())){
+            throw new GlobalException(ErrorCode.TEAM_NAME_DUPLICATED);
+        }
+
+        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), new ArrayList<>());
         teamRepository.save(team);
 
         return TeamResponse.of(
@@ -40,7 +42,7 @@ public class TeamService {
                 team.getName(),
                 team.getDescription(),
                 team.getCreatedAt(),
-                members
+                Collections.emptyList()
         );
     }
 }
