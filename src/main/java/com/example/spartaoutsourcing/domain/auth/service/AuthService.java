@@ -3,8 +3,10 @@ package com.example.spartaoutsourcing.domain.auth.service;
 import com.example.spartaoutsourcing.common.config.JwtUtil;
 import com.example.spartaoutsourcing.common.config.PasswordEncoder;
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
+import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.auth.dto.request.LoginRequest;
+import com.example.spartaoutsourcing.domain.auth.dto.request.WithdrawRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.LoginResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.request.RegisterRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.RegisterResponse;
@@ -63,5 +65,23 @@ public class AuthService {
         String token = jwtUtil.createToken(user.getId(), user.getUsername(), user.getRole());
 
         return new LoginResponse(token);
+    }
+
+    /**
+     * 사용자 엔티티를 아이디로 조회
+     * @param authUser 로그인 확인
+     * @param request 입력받은 비밀번호
+     * @return 사용자 비밀번호
+     */
+    @Transactional
+    public User withdrawUser(AuthUserRequest authUser, WithdrawRequest request) {
+        User user = userService.getUserById(authUser.getId());
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new GlobalException(ErrorCode.DELETE_USER);
+        }
+
+        user.softDelete();
+        return user;
     }
 }
