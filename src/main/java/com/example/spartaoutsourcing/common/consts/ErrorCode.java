@@ -8,7 +8,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     NOT_AUTHENTICATED( "인증이 필요합니다.", HttpStatus.UNAUTHORIZED),
-    EMAIL_DUPLICATED( "중복되는 이메일입니다.", HttpStatus.BAD_REQUEST),
+    EMAIL_DUPLICATED( "이미 존재하는 이메일입니다", HttpStatus.BAD_REQUEST),
+    USERNAME_DUPLICATED( "이미 존재하는 사용자명입니다.", HttpStatus.BAD_REQUEST),
+    LOGIN_CHECKED("잘못된 사용자명 또는 비밀번호입니다",  HttpStatus.UNAUTHORIZED),
 
     // 기본적으로 만든 내용입니다 나중에 커스텀 합시다~~
     NOT_FOUND("데이터가 없습니다.", HttpStatus.NOT_FOUND),
