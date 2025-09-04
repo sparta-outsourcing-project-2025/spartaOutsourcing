@@ -44,22 +44,19 @@ public class UserService {
     }
 
     /**
-     * 사용자 엔티티를 닉네임으로 조회
-     * @param username 사용자 닉네임
-     * @return 사용자 엔티티
+     * 사용자 존재하는지 이메일로 확인
+     * @param email 사용자 이메일
+     * @return 이메일이 존재하면 true, 존재하지 않으면 false
      */
     @Transactional(readOnly = true)
-    public User getUserByUserName(String username) {
-
-        return userRepository.findByUsername(username).orElseThrow(
-                ()-> new GlobalException(ErrorCode.USER_NOT_FOUND)
-        );
+    public boolean existsUserByEmail(String email) {
+        return userRepository.existsUserByEmail(email);
     }
 
     /**
      * 사용자가 존재하는지 닉네임으로 조회
      * @param username 사용자 닉네임
-     * @return 사용자가 존재하면 true, 존재하지 않으면 false
+     * @return 사용자명이 존재하면 true, 존재하지 않으면 false
      */
     @Transactional(readOnly = true)
     public boolean existsUserByUsername(String username) {
@@ -69,7 +66,7 @@ public class UserService {
     /**
      * 회원가입한 User 정보를 저장
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public User save(User user) {
         return userRepository.save(user);
     }
@@ -81,6 +78,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new GlobalException(ErrorCode.LOGIN_CHECKED));
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new GlobalException(ErrorCode.LOGIN_CHECKED));
     }
 }

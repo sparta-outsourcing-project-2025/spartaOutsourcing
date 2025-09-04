@@ -2,10 +2,10 @@ package com.example.spartaoutsourcing.domain.auth.controller;
 
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
-import com.example.spartaoutsourcing.domain.auth.dto.LoginRequest;
-import com.example.spartaoutsourcing.domain.auth.dto.LoginResponse;
-import com.example.spartaoutsourcing.domain.auth.dto.RegisterRequest;
-import com.example.spartaoutsourcing.domain.auth.dto.RegisterResponse;
+import com.example.spartaoutsourcing.domain.auth.dto.request.LoginRequest;
+import com.example.spartaoutsourcing.domain.auth.dto.response.LoginResponse;
+import com.example.spartaoutsourcing.domain.auth.dto.request.RegisterRequest;
+import com.example.spartaoutsourcing.domain.auth.dto.response.RegisterResponse;
 import com.example.spartaoutsourcing.domain.auth.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

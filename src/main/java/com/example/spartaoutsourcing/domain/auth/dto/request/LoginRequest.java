@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.domain.auth.dto;
+package com.example.spartaoutsourcing.domain.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

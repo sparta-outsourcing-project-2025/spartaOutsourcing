@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.domain.auth.dto;
+package com.example.spartaoutsourcing.domain.auth.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
