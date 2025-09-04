@@ -11,6 +11,7 @@ public enum ErrorCode {
     EMAIL_DUPLICATED( "이미 존재하는 이메일입니다", HttpStatus.BAD_REQUEST),
     USERNAME_DUPLICATED( "이미 존재하는 사용자명입니다.", HttpStatus.BAD_REQUEST),
     LOGIN_CHECKED("잘못된 사용자명 또는 비밀번호입니다",  HttpStatus.UNAUTHORIZED),
+    DELETE_USER("비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
 
     // 기본적으로 만든 내용입니다 나중에 커스텀 합시다~~
     NOT_FOUND("데이터가 없습니다.", HttpStatus.NOT_FOUND),
