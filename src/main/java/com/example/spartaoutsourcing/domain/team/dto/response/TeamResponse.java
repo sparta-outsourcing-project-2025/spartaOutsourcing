@@ -34,7 +34,7 @@ public class TeamResponse {
                 )
                 .build();
     }
-  
+
     public static TeamResponse of(
             Long id,
             String name,
