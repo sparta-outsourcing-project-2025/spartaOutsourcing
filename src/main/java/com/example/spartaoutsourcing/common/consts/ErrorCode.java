@@ -24,7 +24,10 @@ public enum ErrorCode {
     AUTH_ANNOTATION_MISMATCH_TYPE("@Auth와 AuthUser 타입은 함께 사용되어야 합니다",HttpStatus.INTERNAL_SERVER_ERROR),
 
     // task
-    TASK_NOT_FOUND("작업을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+    TASK_NOT_FOUND("작업을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+
+    // team
+    TEAM_NAME_DUPLICATED("팀 이름이 이미 존재합니다.", HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus httpStatus;

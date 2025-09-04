@@ -3,8 +3,10 @@ package com.example.spartaoutsourcing.domain.task.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spartaoutsourcing.common.annotation.Auth;
@@ -12,6 +14,8 @@ import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
+import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
+import com.example.spartaoutsourcing.domain.task.dto.response.PageResponseDto;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskResponse;
 import com.example.spartaoutsourcing.domain.task.service.TaskService;
 
@@ -35,5 +39,20 @@ public class TaskController {
 	public GlobalApiResponse<TaskResponse> getTask(@Auth AuthUserRequest authUserRequest, @PathVariable Long taskId) {
 		TaskResponse task = taskService.getTask(authUserRequest, taskId);
 		return GlobalApiResponse.of(SuccessCode.TASK_FIND, task);
+	}
+
+	@PutMapping("/{taskId}")
+	public GlobalApiResponse<TaskResponse> update(@Auth AuthUserRequest authUserRequest, @PathVariable Long taskId,
+		@Valid @RequestBody TaskUpdateRequest taskUpdateRequest) {
+		TaskResponse update = taskService.update(authUserRequest, taskId, taskUpdateRequest);
+		return GlobalApiResponse.of(SuccessCode.TASK_UPDATED, update);
+	}
+
+	@GetMapping
+	public GlobalApiResponse<PageResponseDto<TaskResponse>> getTasks(@Auth AuthUserRequest authUserRequest,
+		@RequestParam(defaultValue = "1") Long page, @RequestParam(defaultValue = "10") Long size, String status, String search, Long assigneeId) {
+		PageResponseDto<TaskResponse> tasks = taskService.getTasks(page, size, status, search, assigneeId);
+
+		return GlobalApiResponse.of(SuccessCode.TASK_FIND_ALL, tasks);
 	}
 }

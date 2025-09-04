@@ -3,15 +3,11 @@ package com.example.spartaoutsourcing.domain.auth.service;
 import com.example.spartaoutsourcing.common.config.JwtUtil;
 import com.example.spartaoutsourcing.common.config.PasswordEncoder;
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
-import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.auth.dto.request.LoginRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.LoginResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.request.RegisterRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.RegisterResponse;
-
-import com.example.spartaoutsourcing.domain.user.dto.UserResponse;
-
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import com.example.spartaoutsourcing.domain.user.service.UserService;

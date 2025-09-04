@@ -24,4 +24,9 @@ public class UserController {
     public GlobalApiResponse<UserResponse> getUser(@Auth AuthUserRequest authUser) {
         return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_USER, userService.getUserResponseById(authUser.getId()));
     }
+
+//    @PostMapping
+//    public GlobalApiResponse<UserResponse> deleteUser(@Auth AuthUserRequest authUser) {
+//        return GlobalApiResponse.of(SuccessCode.SUCCESS_DELETE_USER, userService.deleteUserById(authUser.getId()));
+//    }
 }
