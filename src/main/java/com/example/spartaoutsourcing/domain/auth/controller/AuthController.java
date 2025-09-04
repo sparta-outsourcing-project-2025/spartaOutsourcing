@@ -1,5 +1,6 @@
 package com.example.spartaoutsourcing.domain.auth.controller;
 
+
 import com.example.spartaoutsourcing.common.annotation.Auth;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
@@ -16,8 +17,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+
 @RequestMapping("/api/auth")
+@RestController
 @RequiredArgsConstructor
 public class AuthController {
 
