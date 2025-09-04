@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum SuccessCode {
 
     // COMMON
-    OK(200, "요청 성공"),
+    OK(200, "요청이 성공적으로 처리되었습니다."),
 
     // USER
     CREATED(200, "회원가입이 완료되었습니다."),

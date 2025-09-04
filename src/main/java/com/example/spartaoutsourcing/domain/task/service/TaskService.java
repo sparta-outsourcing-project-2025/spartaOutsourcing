@@ -15,9 +15,10 @@ import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskStatusUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.response.Assignee;
-import com.example.spartaoutsourcing.domain.task.dto.response.PageResponseDto;
+import com.example.spartaoutsourcing.domain.comment.dto.response.PageResponseDto;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskProjection;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskResponse;
+import com.example.spartaoutsourcing.domain.task.dto.response.TaskUserInfoResponse;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
 import com.example.spartaoutsourcing.domain.task.repository.TaskRepository;
@@ -25,7 +26,6 @@ import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor
@@ -149,5 +149,16 @@ public class TaskService {
 	public Page<Task> getTaskPageByKeyword(String keyword, Pageable pageable)
 	{
 		return taskRepository.findTaskPageByKeyword(keyword, pageable);
+	}
+
+	/**
+	 * 추가적으로 필요한 API
+	 * Task 옆 사용자의 정보를 반환
+	 * **/
+	@Transactional(readOnly = true)
+	public TaskUserInfoResponse getTaskUserInfo(AuthUserRequest authUserRequest) {
+		User user = userService.getUserById(authUserRequest.getId());
+
+		return TaskUserInfoResponse.of(user.getId(), user.getEmail(), user.getName(), user.getRole());
 	}
 }

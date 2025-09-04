@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.domain.task.dto.response;
+package com.example.spartaoutsourcing.domain.comment.dto.response;
 
 import java.util.List;
 
