@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.common.advice;
+package com.example.spartaoutsourcing.common.annotation.advice;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;

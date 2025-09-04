@@ -1,11 +1,8 @@
 package com.example.spartaoutsourcing.common.dto;
 
-
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
-
 import java.time.LocalDateTime;
-
 import lombok.Getter;
 
 @Getter
