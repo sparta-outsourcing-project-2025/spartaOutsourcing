@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,7 +28,14 @@ public class TeamService {
 
         Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), new ArrayList<>());
         teamRepository.save(team);
-        return TeamResponse.from(team);
+
+        return TeamResponse.of(
+                team.getId(),
+                team.getName(),
+                team.getDescription(),
+                team.getCreatedAt(),
+                Collections.emptyList()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -46,5 +54,11 @@ public class TeamService {
     @Transactional(readOnly = true)
     public List<Team> getTeamsByKeyword(String keyword) {
         return teamRepository.findTeamsByKeyword(keyword);
+    }
+
+    @Transactional
+    public void delete(Long teamId){
+        Team team = teamRepository.findById(teamId).get();
+        teamRepository.delete(team);
     }
 }

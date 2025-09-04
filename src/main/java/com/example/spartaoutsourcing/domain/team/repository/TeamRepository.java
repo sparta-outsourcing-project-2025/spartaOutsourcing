@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TeamRepository extends JpaRepository <Team, Long> {
-
     boolean existsByName(String name);
 
     @Query("SELECT t FROM Team t WHERE (t.name LIKE %:keyword%) OR (t.description LIKE %:keyword%)")
