@@ -10,6 +10,7 @@ import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
+import com.example.spartaoutsourcing.domain.task.dto.request.TaskStatusUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.response.Assignee;
 import com.example.spartaoutsourcing.domain.task.dto.response.PageResponseDto;
@@ -102,5 +103,23 @@ public class TaskService {
 		Long totalElements = taskRepository.countTasksAll();
 
 		return PageResponseDto.of(taskResponses, totalElements, limit, page);
+	}
+
+	/**
+	 * Task 상태 업데이트
+	 * status의 ENUM값 변경
+	 * **/
+	public TaskResponse statusUpdate(AuthUserRequest authUserRequest, Long taskId, TaskStatusUpdateRequest taskStatusUpdateRequest) {
+		User user = userService.getUserById(authUserRequest.getId());
+
+		Task task = taskRepository.findById(taskId).orElseThrow(() ->
+			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+
+		task.statusUpdate(taskStatusUpdateRequest.getTaskStatus());
+
+		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
+
+		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
+			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
 	}
 }
