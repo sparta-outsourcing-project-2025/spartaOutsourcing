@@ -7,14 +7,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SearchTaskResponse {
+public class TaskSearchResponse {
     private final Long id;
     private final String title;
     private final String description;
-    private final String status;
-    private final SearchAssigneeResponse assignee;
+    private final TaskStatus status;
+    private final AssigneeSearchResponse assignee;
 
-    public static SearchTaskResponse of(Long id, String title, String description, TaskStatus status, SearchAssigneeResponse assignee) {
-        return new SearchTaskResponse(id, title, description, status.toString(), assignee);
+    public static TaskSearchResponse of(Long id, String title, String description, TaskStatus status, AssigneeSearchResponse assignee) {
+        return new TaskSearchResponse(id, title, description, status, assignee);
     }
 }

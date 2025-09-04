@@ -9,11 +9,11 @@ import java.util.List;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class IntegratedSearchResponse {
-    private final List<SearchTaskResponse> tasks;
-    private final List<SearchUserResponse> users;
-    private final List<SearchTeamResponse> teams;
+    private final List<TaskSearchResponse> tasks;
+    private final List<UserSearchResponse> users;
+    private final List<TeamSearchResponse> teams;
 
-    public static IntegratedSearchResponse of(List<SearchTaskResponse> tasks, List<SearchUserResponse> users, List<SearchTeamResponse> teams) {
+    public static IntegratedSearchResponse of(List<TaskSearchResponse> tasks, List<UserSearchResponse> users, List<TeamSearchResponse> teams) {
         return new IntegratedSearchResponse(tasks, users, teams);
     }
 }

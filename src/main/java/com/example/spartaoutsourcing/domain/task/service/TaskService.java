@@ -1,5 +1,8 @@
 package com.example.spartaoutsourcing.domain.task.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,5 +96,18 @@ public class TaskService {
 	public List<Task> getTasksByKeyword(String keyword)
 	{
 		return taskRepository.findTasksByKeyword(keyword);
+	}
+
+	/**
+	 * {@link Task}들을 제목, 내용으로 조회해 페이지로 반환한다
+	 *
+	 * @param keyword 조회할 키워드
+	 * @param pageable 페이지 옵션
+	 * @return 조회된 {@link Task} 페이지
+	 */
+	@Transactional(readOnly = true)
+	public Page<Task> getTaskPageByKeyword(String keyword, Pageable pageable)
+	{
+		return taskRepository.findTaskPageByKeyword(keyword, pageable);
 	}
 }

@@ -8,6 +8,8 @@ import com.example.spartaoutsourcing.domain.team.service.TeamService;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +29,7 @@ public class SearchService {
      * @return 검색 응답 반환
      */
     @Transactional(readOnly = true)
-    public IntegratedSearchResponse integratedSearch(String keyword) {
+    public IntegratedSearchResponse getIntegratedSearchResponseByKeyword(String keyword) {
         if(keyword == null || keyword.isEmpty())
         {
             return null;
@@ -37,22 +39,23 @@ public class SearchService {
         List<User> users = userService.getUsersByKeyword(keyword);
         List<Team> teams = teamService.getTeamsByKeyword(keyword);
 
-        List<SearchTaskResponse> searchTaskResponses = tasks.stream().map(
+        List<TaskSearchResponse> searchTaskResponses = tasks.stream().map(
                 task -> {
                     User taskUser = task.getUser();
-                    SearchAssigneeResponse searchAssigneeResponse = SearchAssigneeResponse.of(taskUser.getId(),taskUser.getName());
+                    AssigneeSearchResponse searchAssigneeResponse = AssigneeSearchResponse.of(taskUser.getId(),taskUser.getName());
 
-                    return SearchTaskResponse.of(
+                    return TaskSearchResponse.of(
                             task.getId(),
                             task.getTitle(),
                             task.getDescription(),
                             task.getTaskStatus(),
-                            searchAssigneeResponse);
+                            searchAssigneeResponse
+                    );
                 }
         ).toList();
 
-        List<SearchUserResponse> searchUserResponses = users.stream().map(
-                user -> SearchUserResponse.of(
+        List<UserSearchResponse> searchUserResponses = users.stream().map(
+                user -> UserSearchResponse.of(
                         user.getId(),
                         user.getUsername(),
                         user.getName(),
@@ -60,8 +63,8 @@ public class SearchService {
                 )
         ).toList();
 
-        List<SearchTeamResponse> searchTeamResponses = teams.stream().map(
-                team -> SearchTeamResponse.of(
+        List<TeamSearchResponse> searchTeamResponses = teams.stream().map(
+                team -> TeamSearchResponse.of(
                         team.getId(),
                         team.getName(),
                         team.getDescription()
@@ -69,5 +72,46 @@ public class SearchService {
         ).toList();
 
         return IntegratedSearchResponse.of(searchTaskResponses,searchUserResponses,searchTeamResponses);
+    }
+
+    /**
+     * {@link Task} 페이지 검색
+     *
+     * @param keyword 조회할 키워드
+     * @param pageable 페이지 옵션
+     * @return {@link Task} 검색 응답 반환
+     */
+    public TaskPageSearchResponse getTaskPageSearchResponse(String keyword, Pageable pageable) {
+        Page<Task> taskPage = taskService.getTaskPageByKeyword(keyword, pageable);
+        List<Task> tasks =  taskPage.getContent();
+
+        List<TaskContentSearchResponse> taskContentSearchResponses = tasks.stream().map(
+                task -> {
+                    AssigneeSearchResponse assignee = AssigneeSearchResponse.of(
+                            task.getUser().getId(),
+                            task.getUser().getUsername());
+
+                    return TaskContentSearchResponse.of(
+                            task.getId(),
+                            task.getTitle(),
+                            task.getDescription(),
+                            task.getTaskStatus(),
+                            task.getTaskPriority(),
+                            task.getUser().getId(),
+                            assignee,
+                            task.getCreatedAt(),
+                            task.getModifiedAt(),
+                            task.getDueDate()
+                    );
+                }
+        ).toList();
+
+        return TaskPageSearchResponse.of(
+                taskContentSearchResponses,
+                taskPage.getTotalElements(),
+                taskPage.getTotalPages(),
+                pageable.getPageSize(),
+                pageable.getPageNumber()
+        );
     }
 }
