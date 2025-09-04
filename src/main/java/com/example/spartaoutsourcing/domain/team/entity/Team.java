@@ -26,4 +26,9 @@ public class Team extends AuditableEntity {
     public static Team of(String name, String description, List<Member> members) {
         return new Team(name, description, members);
     }
+
+    public void updateInfo(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
 }
