@@ -24,11 +24,14 @@ public enum SuccessCode {
 
     // TEAM
     TEAM_CREATED(201, "팀 정보가 성공적으로 업데이트되었습니다."),
+    SUCCESS_GET_TEAM(200,"팀 목록을 조회했습니다."),
+    TEAM_CREATED(201, "팀이 성공적으로 생성되었습니다."),
 
     // COMMENT
     COMMENT_FIND(200,"댓글을 조회했습니다."),
     COMMENT_UPDATED(200, "댓글이 수정되었습니다."),
     COMMENT_CREATED(201, "댓글이 생성되었습니다.");
+
 
     private final int status;
     private final String message;
