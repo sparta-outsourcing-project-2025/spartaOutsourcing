@@ -2,7 +2,6 @@ package com.example.spartaoutsourcing.domain.team.dto.response;
 
 import com.example.spartaoutsourcing.domain.member.dto.MemberResponse;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import com.example.spartaoutsourcing.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
