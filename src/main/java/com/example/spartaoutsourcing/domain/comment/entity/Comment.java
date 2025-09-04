@@ -28,7 +28,7 @@ public class Comment extends AuditableEntity {
     private Task task;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id", nullable = true)
+    @JoinColumn(name = "parent_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Comment parent = null;
 

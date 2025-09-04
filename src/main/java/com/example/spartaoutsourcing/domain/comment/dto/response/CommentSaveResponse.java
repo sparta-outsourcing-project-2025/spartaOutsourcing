@@ -1,9 +1,11 @@
 package com.example.spartaoutsourcing.domain.comment.dto.response;
 
 import com.example.spartaoutsourcing.domain.user.dto.UserCommentResponse;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class CommentSaveResponse {
     private final Long id;
     private final String content;
