@@ -7,6 +7,7 @@ import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
+import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.response.Assignee;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskResponse;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
@@ -45,7 +46,7 @@ public class TaskService {
 	}
 
 	/**
-	 * 특정 사용자 Task 상세 조회
+	 * 사용자 Task 상세 조회
 	 * @PathVariable Task Id 요청
 	 * @return 공통 응답과 Task 상세 조회 응답 반환
 	 * */
@@ -54,8 +55,25 @@ public class TaskService {
 	public TaskResponse getTask(AuthUserRequest authUserRequest, Long taskId) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = taskRepository.findByIdAndUserId(taskId, user.getId()).orElseThrow(() ->
+		Task task = taskRepository.findById(taskId).orElseThrow(() ->
 			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+
+		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
+
+		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
+			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
+	}
+
+	public TaskResponse update(AuthUserRequest authUserRequest, Long taskId, TaskUpdateRequest taskUpdateRequest) {
+		User user = userService.getUserById(authUserRequest.getId());
+
+		Task task = taskRepository.findById(taskId).orElseThrow(() ->
+			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+
+		task.update(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), taskUpdateRequest.getTaskStatus(),
+			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority());
+
+		taskRepository.save(task);
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
 
