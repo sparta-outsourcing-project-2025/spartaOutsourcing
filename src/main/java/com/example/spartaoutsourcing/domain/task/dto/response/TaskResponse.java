@@ -27,4 +27,11 @@ public class TaskResponse {
 		TaskStatus status, Long assigneeId, Assignee assigneeResponse, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		return new TaskResponse(id, title, description, dueDate, priority, status, assigneeId, assigneeResponse, createdAt, updatedAt);
 	}
+
+	public static TaskResponse from(TaskProjection taskProjection) {
+		return new TaskResponse(taskProjection.getId(), taskProjection.getTitle(), taskProjection.getDescription(),
+			taskProjection.getDueDate(), taskProjection.getTaskPriority(), taskProjection.getTaskStatus(),
+			taskProjection.getAssigneeId(), Assignee.of(taskProjection.getAssigneeId(), taskProjection.getUsername(),
+			taskProjection.getName(), taskProjection.getEmail()), taskProjection.getCreatedAt(), taskProjection.getUpdatedAt());
+	}
 }

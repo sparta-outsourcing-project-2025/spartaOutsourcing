@@ -21,6 +21,7 @@ public enum SuccessCode {
     TASK_FIND(200, "Task를 조회했습니다."),
     TASK_UPDATED(200, "Task가 수정되었습니다."),
     TASK_CREATED(201, "Task가 생성되었습니다."),
+    TASK_FIND_ALL(200, "Task 목록을 조회했습니다."),
 
     // TEAM
     SUCCESS_GET_TEAM(200,"팀 목록을 조회했습니다."),

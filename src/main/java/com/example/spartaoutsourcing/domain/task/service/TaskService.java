@@ -1,5 +1,8 @@
 package com.example.spartaoutsourcing.domain.task.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -9,6 +12,8 @@ import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.response.Assignee;
+import com.example.spartaoutsourcing.domain.task.dto.response.PageResponseDto;
+import com.example.spartaoutsourcing.domain.task.dto.response.TaskProjection;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskResponse;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
@@ -79,5 +84,23 @@ public class TaskService {
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
+	}
+
+	/**
+	 * Task 전체 목록 조회
+	 * 페이지네이션과 검색 기능
+	 * */
+	public PageResponseDto<TaskResponse> getTasks(long page, long size, String status, String search, Long assigneeId) {
+
+		long offset = (page - 1) * size;
+		long limit = size;
+
+		List<TaskProjection> taskAll = taskRepository.findAll(status, search, assigneeId, offset, limit);
+
+		List<TaskResponse> taskResponses = taskAll.stream().map(TaskResponse::from).collect(Collectors.toList());
+
+		Long totalElements = taskRepository.countTasksAll();
+
+		return PageResponseDto.of(taskResponses, totalElements, limit, page);
 	}
 }
