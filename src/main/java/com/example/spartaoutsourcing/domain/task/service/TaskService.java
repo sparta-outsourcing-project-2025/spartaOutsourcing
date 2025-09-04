@@ -18,6 +18,8 @@ import com.example.spartaoutsourcing.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -79,5 +81,17 @@ public class TaskService {
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
+	}
+
+	/**
+	 * {@link Task}들을 제목, 내용으로 조회한다
+	 *
+	 * @param keyword 조회할 키워드
+	 * @return 조회된 {@link Task} 리스트
+	 */
+	@Transactional(readOnly = true)
+	public List<Task> getTasksByKeyword(String keyword)
+	{
+		return taskRepository.findTasksByKeyword(keyword);
 	}
 }

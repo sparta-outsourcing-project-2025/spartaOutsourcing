@@ -8,12 +8,12 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SearchResponse {
+public class IntegratedSearchResponse {
     private final List<SearchTaskResponse> tasks;
     private final List<SearchUserResponse> users;
     private final List<SearchTeamResponse> teams;
 
-    public static SearchResponse of(List<SearchTaskResponse> tasks, List<SearchUserResponse> users, List<SearchTeamResponse> teams) {
-        return new SearchResponse(tasks, users, teams);
+    public static IntegratedSearchResponse of(List<SearchTaskResponse> tasks, List<SearchUserResponse> users, List<SearchTeamResponse> teams) {
+        return new IntegratedSearchResponse(tasks, users, teams);
     }
 }
