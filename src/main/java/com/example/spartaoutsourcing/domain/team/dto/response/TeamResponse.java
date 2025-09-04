@@ -33,6 +33,8 @@ public class TeamResponse {
                                 .toList()
                 )
                 .build();
+    }
+
     public static TeamResponse of(
             Long id,
             String name,

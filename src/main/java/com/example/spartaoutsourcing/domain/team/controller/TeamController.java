@@ -36,8 +36,6 @@ public class TeamController {
     {
         List<TeamResponse> result = teamService.getTeams();
         return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_TEAM, result);
-        TeamResponse save = teamService.save(teamRequest);
-        return GlobalApiResponse.of(SuccessCode.TEAM_CREATED, save);
     }
 
     @DeleteMapping("/{teamId}")
