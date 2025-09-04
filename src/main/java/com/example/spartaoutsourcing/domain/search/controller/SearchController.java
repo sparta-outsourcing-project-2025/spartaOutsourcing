@@ -28,6 +28,6 @@ private final SearchService searchService;
     public GlobalApiResponse<TaskPageSearchResponse> taskPageSearch(
             @RequestParam(name = "q") String keyword,
             @PageableDefault Pageable pageable) {
-        return GlobalApiResponse.of(SuccessCode.SUCCESS_SEARCH, searchService.getTaskPageSearchResponse(keyword, pageable));
+        return GlobalApiResponse.of(SuccessCode.SUCCESS_SEARCH_TASK, searchService.getTaskPageSearchResponse(keyword, pageable));
     }
 }
