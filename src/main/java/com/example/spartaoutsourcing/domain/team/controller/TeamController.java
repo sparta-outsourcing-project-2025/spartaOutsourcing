@@ -18,12 +18,19 @@ import org.springframework.web.bind.annotation.*;
 public class TeamController {
     private final TeamService teamService;
 
-    // 팀 생성
     @PostMapping
     public GlobalApiResponse<TeamResponse> save(
             @Valid @RequestBody TeamRequest teamRequest
     ){
         TeamResponse save = teamService.save(teamRequest);
         return GlobalApiResponse.of(SuccessCode.TEAM_CREATED, save);
+    }
+
+    @DeleteMapping("/{teamId}")
+    public GlobalApiResponse<Void> delete(
+            @PathVariable Long teamId
+    ){
+        teamService.delete(teamId);
+        return GlobalApiResponse.of(SuccessCode.TEAM_DELETED, null);
     }
 }

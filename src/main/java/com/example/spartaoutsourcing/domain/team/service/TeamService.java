@@ -43,4 +43,10 @@ public class TeamService {
                 members
         );
     }
+
+    @Transactional
+    public void delete(Long teamId){
+        Team team = teamRepository.findById(teamId).get();
+        teamRepository.delete(team);
+    }
 }
