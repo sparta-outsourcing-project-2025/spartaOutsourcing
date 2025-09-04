@@ -33,9 +33,9 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
             WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-        Long id = (Long) request.getSession().getAttribute("id");
-        String email = (String) request.getSession().getAttribute("email");
-        UserRole role= UserRole.of((String) request.getSession().getAttribute("role"));
+        Long id = (Long) request.getAttribute("userId");
+        String email = (String) request.getAttribute("email");
+        UserRole role= (UserRole) request.getAttribute("userRole");
 
         return AuthUserRequest.of(id,email,role);
     }
