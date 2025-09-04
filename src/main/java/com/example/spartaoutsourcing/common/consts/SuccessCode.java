@@ -32,7 +32,11 @@ public enum SuccessCode {
     // COMMENT
     COMMENT_FIND(200,"댓글을 조회했습니다."),
     COMMENT_UPDATED(200, "댓글이 수정되었습니다."),
-    COMMENT_CREATED(201, "댓글이 생성되었습니다.");
+    COMMENT_CREATED(201, "댓글이 생성되었습니다."),
+
+    // SEARCH
+    SUCCESS_SEARCH(200,"검색 완료"),
+    SUCCESS_SEARCH_TASK(200,"작업 검색 완료");
 
     private final int status;
     private final String message;

@@ -4,6 +4,7 @@ import com.example.spartaoutsourcing.common.entity.AuditableEntity;
 import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name="users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access =  AccessLevel.PRIVATE)
 public class User extends AuditableEntity {
     @Column(nullable = false, length = 20)
     private String username;
@@ -27,14 +29,6 @@ public class User extends AuditableEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
-
-    private User (String username, String email, String password, String name, UserRole role) {
-        this.username = username;
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.role = role;
-    }
 
     public static User of(String username, String email, String password, String name, UserRole role)
     {

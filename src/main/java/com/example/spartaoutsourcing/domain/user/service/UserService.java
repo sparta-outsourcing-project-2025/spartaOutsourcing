@@ -2,12 +2,14 @@ package com.example.spartaoutsourcing.domain.user.service;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
-import com.example.spartaoutsourcing.domain.user.dto.UserResponse;
+import com.example.spartaoutsourcing.domain.user.dto.response.UserResponse;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -80,5 +82,16 @@ public class UserService {
     public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new GlobalException(ErrorCode.LOGIN_CHECKED));
+    }
+
+    /**
+     * {@link User}들을 이름, 이메일로 조회한다
+     *
+     * @param keyword 조회할 키워드
+     * @return 조회된 {@link User} 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<User> getUsersByKeyword(String keyword) {
+        return userRepository.findUsersByKeyword(keyword);
     }
 }

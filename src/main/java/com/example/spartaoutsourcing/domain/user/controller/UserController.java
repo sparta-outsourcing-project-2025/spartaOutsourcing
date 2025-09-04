@@ -4,7 +4,7 @@ import com.example.spartaoutsourcing.common.annotation.Auth;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
-import com.example.spartaoutsourcing.domain.user.dto.UserResponse;
+import com.example.spartaoutsourcing.domain.user.dto.response.UserResponse;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +24,4 @@ public class UserController {
     public GlobalApiResponse<UserResponse> getUser(@Auth AuthUserRequest authUser) {
         return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_USER, userService.getUserResponseById(authUser.getId()));
     }
-
-//    @PostMapping
-//    public GlobalApiResponse<UserResponse> deleteUser(@Auth AuthUserRequest authUser) {
-//        return GlobalApiResponse.of(SuccessCode.SUCCESS_DELETE_USER, userService.deleteUserById(authUser.getId()));
-//    }
 }
