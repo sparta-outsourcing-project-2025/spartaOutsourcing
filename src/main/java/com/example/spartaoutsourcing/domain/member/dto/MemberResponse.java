@@ -18,8 +18,6 @@ public class MemberResponse {
     private UserRole role;
     private LocalDateTime createdAt;
 
-
-
     public static MemberResponse from(Member member) {
         return new MemberResponse(
                 member.getId(),

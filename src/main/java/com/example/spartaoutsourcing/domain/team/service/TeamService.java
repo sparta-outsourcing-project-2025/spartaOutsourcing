@@ -30,7 +30,14 @@ public class TeamService {
 
         Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), new ArrayList<>());
         teamRepository.save(team);
-        return TeamResponse.from(team);
+
+        return TeamResponse.of(
+                team.getId(),
+                team.getName(),
+                team.getDescription(),
+                team.getCreatedAt(),
+                Collections.emptyList()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -44,8 +51,5 @@ public class TeamService {
     public void delete(Long teamId){
         Team team = teamRepository.findById(teamId).get();
         teamRepository.delete(team);
-    }
-                Collections.emptyList()
-        );
     }
 }

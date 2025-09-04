@@ -27,7 +27,7 @@ public enum ErrorCode {
     TASK_NOT_FOUND("작업을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     // team
-    TEAM_NAME_DUPLICATED("팀 이름이 이미 존재합니다.", HttpStatus.BAD_REQUEST);
+    TEAM_NAME_DUPLICATED("팀 이름이 이미 존재합니다",HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus httpStatus;
