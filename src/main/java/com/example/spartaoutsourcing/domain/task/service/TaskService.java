@@ -162,4 +162,15 @@ public class TaskService {
 
 		return TaskUserInfoResponse.of(user.getId(), user.getEmail(), user.getName(), user.getRole());
 	}
+
+	/**
+	 * Task 삭제
+	 * soft delete를 이용해 논리적으로 삭제한다.
+	 * **/
+	public void delete(Long taskId) {
+		Task task = taskRepository.findById(taskId).orElseThrow(() ->
+			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+
+		task.softDelete();
+	}
 }

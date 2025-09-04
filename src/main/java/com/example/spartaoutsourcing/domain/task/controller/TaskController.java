@@ -1,5 +1,6 @@
 package com.example.spartaoutsourcing.domain.task.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,5 +73,12 @@ public class TaskController {
 		TaskUserInfoResponse taskUserInfo = taskService.getTaskUserInfo(authUserRequest);
 
 		return GlobalApiResponse.of(SuccessCode.OK, taskUserInfo);
+	}
+
+	@DeleteMapping("/tasks/{taskId}")
+	public GlobalApiResponse<Void> delete(@Auth AuthUserRequest authUserRequest, @PathVariable Long taskId) {
+		taskService.delete(taskId);
+
+		return GlobalApiResponse.of(SuccessCode.TASK_DELETED, null);
 	}
 }
