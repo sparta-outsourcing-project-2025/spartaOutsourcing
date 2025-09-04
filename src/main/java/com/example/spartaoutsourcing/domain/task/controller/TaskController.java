@@ -17,7 +17,7 @@ import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskStatusUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
-import com.example.spartaoutsourcing.domain.comment.dto.response.PageResponseDto;
+import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskResponse;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskUserInfoResponse;
 import com.example.spartaoutsourcing.domain.task.service.TaskService;

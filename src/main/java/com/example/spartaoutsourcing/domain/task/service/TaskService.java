@@ -15,7 +15,7 @@ import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskStatusUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.response.Assignee;
-import com.example.spartaoutsourcing.domain.comment.dto.response.PageResponseDto;
+import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskProjection;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskResponse;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskUserInfoResponse;
@@ -105,8 +105,8 @@ public class TaskService {
 		List<TaskResponse> taskResponses = taskAll.stream().map(TaskResponse::from).collect(Collectors.toList());
 
 		Long totalElements = taskRepository.countTasksAll();
-
-		return PageResponseDto.of(taskResponses, totalElements, limit, page);
+		int totalPage= (int)Math.ceil((double)totalElements / size);
+		return PageResponseDto.of(taskResponses, totalElements, totalPage, limit, page);
 	}
 
 	/**

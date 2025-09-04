@@ -1,5 +1,6 @@
 package com.example.spartaoutsourcing.domain.search.service;
 
+import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.domain.search.dto.response.*;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.service.TaskService;
@@ -81,7 +82,7 @@ public class SearchService {
      * @param pageable 페이지 옵션
      * @return {@link Task} 검색 응답 반환
      */
-    public TaskPageSearchResponse getTaskPageSearchResponse(String keyword, Pageable pageable) {
+    public PageResponseDto<TaskContentSearchResponse> getTaskPageSearchResponse(String keyword, Pageable pageable) {
         Page<Task> taskPage = taskService.getTaskPageByKeyword(keyword, pageable);
         List<Task> tasks =  taskPage.getContent();
 
@@ -106,7 +107,7 @@ public class SearchService {
                 }
         ).toList();
 
-        return TaskPageSearchResponse.of(
+        return PageResponseDto.of(
                 taskContentSearchResponses,
                 taskPage.getTotalElements(),
                 taskPage.getTotalPages(),
