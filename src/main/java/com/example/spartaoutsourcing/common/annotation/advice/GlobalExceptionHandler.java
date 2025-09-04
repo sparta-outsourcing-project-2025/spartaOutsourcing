@@ -3,7 +3,10 @@ package com.example.spartaoutsourcing.common.annotation.advice;
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +32,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest()
             .body(new GlobalApiResponse<>(false, message, null));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<GlobalApiResponse<Object>> handleInvalidEnum(HttpMessageNotReadableException e) {
+        if (e.getCause() instanceof InvalidFormatException invalidEx && invalidEx.getTargetType().isEnum()) {
+            return ResponseEntity.badRequest()
+                .body(new GlobalApiResponse<>(false, ErrorCode.INVALID_TASK_STATUS.getMessage(), null));
+        }
+        return ResponseEntity.badRequest()
+            .body(new GlobalApiResponse<>(false, "잘못된 요청입니다.", null));
     }
 }
