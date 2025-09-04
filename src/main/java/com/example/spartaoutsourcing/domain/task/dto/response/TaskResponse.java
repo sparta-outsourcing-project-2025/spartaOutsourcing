@@ -19,7 +19,7 @@ public class TaskResponse {
 	private TaskPriority priority;
 	private TaskStatus status;
 	private Long assigneeId;
-	private Assignee assigneeResponse;
+	private Assignee assignee;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
