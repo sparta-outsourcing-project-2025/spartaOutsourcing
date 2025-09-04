@@ -2,6 +2,7 @@ package com.example.spartaoutsourcing.domain.team.service;
 
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
+import com.example.spartaoutsourcing.domain.member.dto.MemberResponse;
 import com.example.spartaoutsourcing.domain.team.dto.request.TeamRequest;
 import com.example.spartaoutsourcing.domain.team.dto.response.TeamResponse;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +28,7 @@ public class TeamService {
             throw new GlobalException(ErrorCode.TEAM_NAME_DUPLICATED);
         }
 
-        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), Collections.emptyList());
+        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), new ArrayList<>());
         teamRepository.save(team);
 
         return TeamResponse.of(

@@ -16,7 +16,7 @@ public class MemberResponse {
     private String name;
     private String email;
     private UserRole role;
-    private LocalDateTime createdAt; // 추가
+    private LocalDateTime createdAt;
 
     public static MemberResponse from(Member member) {
         return new MemberResponse(
@@ -25,13 +25,7 @@ public class MemberResponse {
                 member.getUser().getName(),
                 member.getUser().getEmail(),
                 member.getUser().getRole(),
-                member.getUser().getCreatedAt()
+                member.getCreatedAt()
         );
     }
-
-
-    public static MemberResponse of(Long id, String username, String name, String email, UserRole role, LocalDateTime createdAt) {
-        return new MemberResponse(id, username, name, email, role, createdAt);
-    }
-
 }
