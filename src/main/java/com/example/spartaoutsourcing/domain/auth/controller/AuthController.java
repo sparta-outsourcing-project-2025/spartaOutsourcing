@@ -11,8 +11,8 @@ import com.example.spartaoutsourcing.domain.auth.dto.response.LoginResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.request.RegisterRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.RegisterResponse;
 import com.example.spartaoutsourcing.domain.auth.service.AuthService;
-
-import com.example.spartaoutsourcing.domain.user.dto.UserResponse;
+import com.example.spartaoutsourcing.domain.user.dto.response.UserResponse;
+import com.example.spartaoutsourcing.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -42,11 +42,10 @@ public class AuthController {
     }
 
     @DeleteMapping("/withdraw")
-    public GlobalApiResponse<UserResponse> deleteUser(
-            @Auth AuthUserRequest authUser,
-            @RequestBody @Valid WithdrawRequest withdrawRequest
-    ) {
-        UserResponse response = authService.withdrawUser(authUser, withdrawRequest.getPassword());
+    public GlobalApiResponse<UserResponse> withdraw(@Auth AuthUserRequest authUser,
+                                                    @Valid @RequestBody WithdrawRequest request) {
+        User user = authService.withdrawUser(authUser, request);
+        UserResponse response = UserResponse.from(user);
         return GlobalApiResponse.of(SuccessCode.SUCCESS_DELETE_USER, response);
     }
 }

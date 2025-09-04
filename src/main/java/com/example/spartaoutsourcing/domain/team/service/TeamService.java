@@ -1,8 +1,7 @@
 package com.example.spartaoutsourcing.domain.team.service;
 
-import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
-import com.example.spartaoutsourcing.domain.member.dto.MemberResponse;
+import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.team.dto.request.TeamRequest;
 import com.example.spartaoutsourcing.domain.team.dto.response.TeamResponse;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,6 +43,17 @@ public class TeamService {
         return teamRepository.findAll().stream()
                 .map(TeamResponse::from)
                 .toList();
+    }
+
+    /**
+     * {@link Team}들을 이름, 내용으로 조회한다
+     *
+     * @param keyword 조회할 키워드
+     * @return 조회된 {@link Team} 리스트
+     */
+    @Transactional(readOnly = true)
+    public List<Team> getTeamsByKeyword(String keyword) {
+        return teamRepository.findTeamsByKeyword(keyword);
     }
 
     @Transactional

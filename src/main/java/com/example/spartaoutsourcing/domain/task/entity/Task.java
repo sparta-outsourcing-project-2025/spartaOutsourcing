@@ -62,4 +62,8 @@ public class Task extends AuditableEntity {
 		this.dueDate = dueDate;
 		this.taskStatus = taskStatus;
 	}
+
+	public void statusUpdate(TaskStatus taskStatus) {
+		this.taskStatus = taskStatus;
+	}
 }
