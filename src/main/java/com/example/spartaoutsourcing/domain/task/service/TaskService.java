@@ -45,7 +45,7 @@ public class TaskService {
 	}
 
 	/**
-	 * 특정 사용자 Task 상세 조회
+	 * 사용자 Task 상세 조회
 	 * @PathVariable Task Id 요청
 	 * @return 공통 응답과 Task 상세 조회 응답 반환
 	 * */
@@ -54,7 +54,7 @@ public class TaskService {
 	public TaskResponse getTask(AuthUserRequest authUserRequest, Long taskId) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = taskRepository.findByIdAndUserId(taskId, user.getId()).orElseThrow(() ->
+		Task task = taskRepository.findById(taskId).orElseThrow(() ->
 			new GlobalException(ErrorCode.TASK_NOT_FOUND));
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
