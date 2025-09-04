@@ -39,4 +39,13 @@ public class TeamService {
                 .map(TeamResponse::from)
                 .toList();
     }
+
+    @Transactional
+    public void delete(Long teamId){
+        Team team = teamRepository.findById(teamId).get();
+        teamRepository.delete(team);
+    }
+                Collections.emptyList()
+        );
+    }
 }

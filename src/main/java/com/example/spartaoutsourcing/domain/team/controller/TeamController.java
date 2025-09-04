@@ -37,4 +37,12 @@ public class TeamController {
         List<TeamResponse> result = teamService.getTeams();
         return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_TEAM, result);
     }
+
+    @DeleteMapping("/{teamId}")
+    public GlobalApiResponse<Void> delete(
+            @PathVariable Long teamId
+    ){
+        teamService.delete(teamId);
+        return GlobalApiResponse.of(SuccessCode.TEAM_DELETED, null);
+    }
 }
