@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,6 +30,20 @@ public class TeamService {
     @Transactional
     public TeamResponse save(TeamRequest teamRequest) {
 
+        List<Member> member = new ArrayList<>();
+        List<MemberResponse> members = new ArrayList<>();
+        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), member);
+        teamRepository.save(team);
+
+        return TeamResponse.from(team);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TeamResponse> getTeams(){
+
+        return teamRepository.findAll().stream()
+                .map(TeamResponse::from)
+                .toList();
         if(teamRepository.existsByName(teamRequest.getName())){
             throw new GlobalException(ErrorCode.TEAM_NAME_DUPLICATED);
         }
