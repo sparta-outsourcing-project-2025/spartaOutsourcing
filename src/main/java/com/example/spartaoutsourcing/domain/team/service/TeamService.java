@@ -86,4 +86,5 @@ public class TeamService {
     public List<Team> getTeamsByKeyword(String keyword) {
         return teamRepository.findTeamsByKeyword(keyword);
     }
+
 }
