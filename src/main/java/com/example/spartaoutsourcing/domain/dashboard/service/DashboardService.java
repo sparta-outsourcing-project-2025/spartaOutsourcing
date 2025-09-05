@@ -1,14 +1,20 @@
 package com.example.spartaoutsourcing.domain.dashboard.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskProjection;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskResponse;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardOverDueTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardStatsProjection;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardTodayTaskResponse;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUpcomingTaskResponse;
 import com.example.spartaoutsourcing.domain.member.service.MemberService;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
@@ -27,7 +33,6 @@ public class DashboardService {
 
 	private final TaskRepository taskRepository;
 	private final TeamRepository teamRepository;
-	private final UserService userService;
 	private final MemberService memberService;
 
 	/**
@@ -57,5 +62,36 @@ public class DashboardService {
 		return DashboardResponse.of(dashboardStats.getTotalTasks(), dashboardStats.getCompletedTasks(),
 			dashboardStats.getInProgressTasks(), dashboardStats.getTodoTasks(), dashboardStats.getOverDueTasks(),
 			teamProgress, dashboardStats.getMyTasksToday(), completionRate);
+	}
+
+	/**
+	 * dashboard 내 작업 요약 조회
+	 * **/
+	public DashboardMyTaskResponse getDashboardMyTasks() {
+		List<DashboardMyTaskProjection> myTaskAll = taskRepository.findMyTaskAll();
+
+		List<DashboardTodayTaskResponse> todayTasks = myTaskAll.stream()
+			.filter(today -> "TODAY".equals(today.getTaskCategory()))
+			.filter(today -> today.getTaskStatus() != TaskStatus.COMPLETED)
+			.map(today -> DashboardTodayTaskResponse.of(
+				today.getId(), today.getTitle(), today.getTaskStatus(), today.getDueDate()))
+			.collect(Collectors.toList());
+
+
+		List<DashboardUpcomingTaskResponse> upcomingTasks = myTaskAll.stream()
+			.filter(upcoming -> "UPCOMING".equals(upcoming.getTaskCategory()))
+			.filter(upcoming -> upcoming.getTaskStatus() != TaskStatus.COMPLETED)
+			.map(upcoming -> DashboardUpcomingTaskResponse.of(
+				upcoming.getId(), upcoming.getTitle(), upcoming.getTaskStatus(), upcoming.getDueDate()))
+			.collect(Collectors.toList());
+
+		List<DashboardOverDueTaskResponse> overDueTasks = myTaskAll.stream()
+			.filter(overDue -> "OVERDUE".equals(overDue.getTaskCategory()))
+			.filter(overDue -> overDue.getTaskStatus() != TaskStatus.COMPLETED)
+			.map(overDue -> DashboardOverDueTaskResponse.of(
+				overDue.getId(), overDue.getTitle(), overDue.getTaskStatus(), overDue.getDueDate()))
+			.collect(Collectors.toList());
+
+		return DashboardMyTaskResponse.of(todayTasks, upcomingTasks, overDueTasks);
 	}
 }
