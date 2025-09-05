@@ -1,6 +1,7 @@
 package com.example.spartaoutsourcing.domain.team.controller;
 
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
+import com.example.spartaoutsourcing.domain.member.dto.response.MemberResponse;
 import com.example.spartaoutsourcing.domain.team.dto.request.TeamRequest;
 import com.example.spartaoutsourcing.domain.team.dto.response.TeamResponse;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
@@ -55,5 +56,13 @@ public class TeamController {
     ){
         TeamResponse teamResponse = teamService.getTeamById(teamId);
         return GlobalApiResponse.of(SuccessCode.TEAM_FOUND, teamResponse);
+    }
+
+    @GetMapping("/{teamId}/members")
+    public GlobalApiResponse<List<MemberResponse>> getTeamMembers(
+            @PathVariable Long teamId
+    ){
+        List<MemberResponse> members = teamService.getMembersByTeamId(teamId);
+        return GlobalApiResponse.of(SuccessCode.TEAM_MEMBERS_RETRIEVED, members);
     }
 }
