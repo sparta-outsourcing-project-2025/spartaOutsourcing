@@ -79,6 +79,7 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new GlobalException(ErrorCode.DELETE_USER);
         }
+
         user.softDelete();
         return user;
     }

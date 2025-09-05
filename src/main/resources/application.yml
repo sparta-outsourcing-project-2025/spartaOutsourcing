@@ -6,7 +6,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         show_sql: true
@@ -16,7 +16,7 @@ jwt:
   secret:
     key: ${JWT_SECRET_KEY}
 
-server:
-  port: 8080
-  servlet:
-    context-path: /api
+#server:
+#  port: 8080
+#  servlet:
+#    context-path: /api

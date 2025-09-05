@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum SuccessCode {
 
     // COMMON
-    OK(200, "요청 성공"),
+    OK(200, "요청이 성공적으로 처리되었습니다."),
 
     // USER
     CREATED(200, "회원가입이 완료되었습니다."),
@@ -23,11 +23,13 @@ public enum SuccessCode {
     TASK_CREATED(201, "Task가 생성되었습니다."),
     TASK_FIND_ALL(200, "Task 목록을 조회했습니다."),
     TASK_STATUS_UPDATED(200, "작업 상태가 업데이트되었습니다."),
+    TASK_DELETED(200, "Task가 삭제되었습니다."),
 
     // TEAM
     SUCCESS_GET_TEAM(200,"팀 목록을 조회했습니다."),
     TEAM_CREATED(201, "팀이 성공적으로 생성되었습니다."),
     TEAM_DELETED(200, "팀이 성공적으로 삭제되었습니다."),
+    TEAM_UPDATE(200, "팀 정보가 성공적으로 업데이트되었습니다."),
 
     // COMMENT
     COMMENT_FIND(200,"댓글을 조회했습니다."),
