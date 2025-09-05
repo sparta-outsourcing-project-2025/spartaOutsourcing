@@ -32,6 +32,15 @@ public class TeamController {
         return GlobalApiResponse.of(SuccessCode.SUCCESS_GET_TEAM, result);
     }
 
+    @PutMapping("/{teamId}")
+    public GlobalApiResponse<TeamResponse> updateTeam(
+            @PathVariable Long teamId,
+            @RequestBody TeamRequest teamRequest
+    ){
+        TeamResponse updatedTeam = teamService.updateTeam(teamId, teamRequest);
+        return GlobalApiResponse.of(SuccessCode.TEAM_UPDATE, updatedTeam);
+    }
+
     @DeleteMapping("/{teamId}")
     public GlobalApiResponse<Void> delete(
             @PathVariable Long teamId

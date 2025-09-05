@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.domain.member.dto;
+package com.example.spartaoutsourcing.domain.member.dto.response;
 
 
 import com.example.spartaoutsourcing.domain.member.entity.Member;
@@ -20,12 +20,12 @@ public class MemberResponse {
 
     public static MemberResponse from(Member member) {
         return new MemberResponse(
-                member.getId(),
+                member.getUser().getId(),
                 member.getUser().getUsername(),
                 member.getUser().getName(),
                 member.getUser().getEmail(),
                 member.getUser().getRole(),
-                member.getCreatedAt()
+                member.getUser().getCreatedAt()
         );
     }
 }
