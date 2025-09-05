@@ -27,8 +27,6 @@ import java.util.Objects;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public TeamResponse save(TeamRequest teamRequest) {
@@ -103,4 +101,15 @@ public class TeamService {
         return TeamResponse.from(team);
     }
 
+    @Transactional(readOnly=true)
+    public List<MemberResponse> getMembersByTeamId(Long teamId) {
+
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.TEAM_NOT_FOUND));
+
+        return team.getMembers().stream()
+                .map(MemberResponse::from)
+                .filter(Objects::nonNull)
+                .toList();
+    }
 }
