@@ -28,6 +28,10 @@ public enum SuccessCode {
     SUCCESS_GET_TEAM(200,"팀 목록을 조회했습니다."),
     TEAM_CREATED(201, "팀이 성공적으로 생성되었습니다."),
     TEAM_DELETED(200, "팀이 성공적으로 삭제되었습니다."),
+    TEAM_UPDATE(200, "팀 정보가 성공적으로 업데이트되었습니다."),
+
+    // MEMBER
+    MEMBER_ADDED(200, "멤버가 성공적으로 추가되었습니다."),
 
     // COMMENT
     COMMENT_FIND(200,"댓글을 조회했습니다."),

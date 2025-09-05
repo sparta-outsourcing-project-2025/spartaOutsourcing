@@ -5,10 +5,8 @@ import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,6 +27,10 @@ public class Member extends AuditableEntity {
     public Member(Team team, User user){
         this.team = team;
         this.user = user;
+    }
+
+    public void setTeam(Team team) {
+        this.team = team;
     }
 
 }
