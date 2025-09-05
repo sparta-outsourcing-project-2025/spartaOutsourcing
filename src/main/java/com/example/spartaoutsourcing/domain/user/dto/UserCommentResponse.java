@@ -1,5 +1,6 @@
 package com.example.spartaoutsourcing.domain.user.dto;
 
+import com.example.spartaoutsourcing.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,4 +17,5 @@ public class UserCommentResponse {
     public static UserCommentResponse of(Long id, String username, String name, String email, String role) {
         return new UserCommentResponse(id, username, name, email, role);
     }
+
 }
