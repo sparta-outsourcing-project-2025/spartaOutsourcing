@@ -2,6 +2,8 @@ package com.example.spartaoutsourcing.domain.task.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import com.example.spartaoutsourcing.common.entity.AuditableEntity;
 import com.example.spartaoutsourcing.domain.task.enums.TaskPriority;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
@@ -22,6 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "tasks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted_at IS NULL")
 public class Task extends AuditableEntity {
 
 	private String title;
@@ -65,5 +68,9 @@ public class Task extends AuditableEntity {
 
 	public void statusUpdate(TaskStatus taskStatus) {
 		this.taskStatus = taskStatus;
+	}
+
+	public void softDelete() {
+		this.deletedAt = LocalDateTime.now();
 	}
 }
