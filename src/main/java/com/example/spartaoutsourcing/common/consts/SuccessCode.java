@@ -43,7 +43,11 @@ public enum SuccessCode {
 
     // SEARCH
     SUCCESS_SEARCH(200,"검색 완료"),
-    SUCCESS_SEARCH_TASK(200,"작업 검색 완료");
+    SUCCESS_SEARCH_TASK(200,"작업 검색 완료"),
+
+    //DASHBOARD
+    SUCCESS_FIND_DASHBOARD_STATS(200,"대시보드 통계 조회 완료"),
+    SUCCESS_DASHBOARD_MY_TASKS(200, "내 작업 요약 조회 완료");
 
     private final int status;
     private final String message;

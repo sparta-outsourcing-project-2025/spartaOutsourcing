@@ -119,7 +119,7 @@ public class TaskService {
 		Task task = taskRepository.findById(taskId).orElseThrow(() ->
 			new GlobalException(ErrorCode.TASK_NOT_FOUND));
 
-		task.statusUpdate(taskStatusUpdateRequest.getTaskStatus());
+		task.statusUpdate(taskStatusUpdateRequest.getStatus());
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
 
