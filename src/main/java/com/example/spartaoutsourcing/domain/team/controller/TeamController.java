@@ -48,5 +48,4 @@ public class TeamController {
         teamService.delete(teamId);
         return GlobalApiResponse.of(SuccessCode.TEAM_DELETED, null);
     }
-
 }
