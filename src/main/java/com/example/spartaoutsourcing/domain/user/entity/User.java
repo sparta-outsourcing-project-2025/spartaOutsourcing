@@ -6,14 +6,15 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.SQLRestriction;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
 @Table(name="users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-// 조회 시 삭제된 메시지는 보이지 않음
-@Where(clause = "deleted = false")
+@SQLRestriction("deleted_at IS NULL")
 public class User extends AuditableEntity {
     @Column(nullable = false, length = 20)
     private String username;
@@ -31,8 +32,6 @@ public class User extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    private boolean deleted = false;
-
     private User (String username, String email, String password, String name, UserRole role) {
         this.username = username;
         this.email = email;
@@ -47,6 +46,6 @@ public class User extends AuditableEntity {
     }
 
     public void softDelete() {
-        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
     }
 }
