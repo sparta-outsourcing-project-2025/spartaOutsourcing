@@ -11,13 +11,16 @@ import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractAuditable_;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -87,5 +90,17 @@ public class TeamService {
         return teamRepository.findTeamsByKeyword(keyword);
     }
 
+    @Transactional(readOnly = true)
+    public TeamResponse getTeamById(Long teamId){
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.TEAM_NOT_FOUND));
+
+        List<MemberResponse> memberResponses = team.getMembers().stream()
+                .map(MemberResponse::from)
+                .filter(Objects::nonNull)
+                .toList();
+
+        return TeamResponse.from(team);
+    }
 
 }

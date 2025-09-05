@@ -48,4 +48,12 @@ public class TeamController {
         teamService.delete(teamId);
         return GlobalApiResponse.of(SuccessCode.TEAM_DELETED, null);
     }
+
+    @GetMapping("/{teamId}")
+    public GlobalApiResponse<TeamResponse> getTeam(
+            @PathVariable Long teamId
+    ){
+        TeamResponse teamResponse = teamService.getTeamById(teamId);
+        return GlobalApiResponse.of(SuccessCode.TEAM_FOUND, teamResponse);
+    }
 }
