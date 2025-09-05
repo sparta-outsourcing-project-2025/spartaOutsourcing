@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskProjection;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardStatsProjection;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskProjection;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
@@ -60,4 +61,15 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 	DashboardStatsProjection findDashboardStats();
 
 	List<Task> findByUser(User user);
+
+	@Query(value = """
+		SELECT t.id, t.title, t.task_status AS taskStatus, t.due_date AS dueDate,
+		CASE WHEN DATE(t.due_date) = current_date() THEN 'TODAY'
+		WHEN DATE(t.due_date) > current_date() THEN 'UPCOMING'
+  		WHEN DATE(t.due_date) < current_date() THEN 'OVERDUE'
+  		END AS taskCategory
+  		FROM tasks t
+  		ORDER BY t.due_date ASC;
+	""", nativeQuery = true)
+	List<DashboardMyTaskProjection> findMyTaskAll();
 }

@@ -8,6 +8,7 @@ import com.example.spartaoutsourcing.common.annotation.Auth;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardResponse;
 import com.example.spartaoutsourcing.domain.dashboard.service.DashboardService;
 
@@ -25,5 +26,12 @@ public class DashboardController {
 		DashboardResponse dashboardStats = dashboardService.getDashboardStats();
 
 		return GlobalApiResponse.of(SuccessCode.SUCCESS_FIND_DASHBOARD_STATS, dashboardStats);
+	}
+
+	@GetMapping("/my-tasks")
+	public GlobalApiResponse<DashboardMyTaskResponse> getDashboardMyTasks(@Auth AuthUserRequest authUserRequest) {
+		DashboardMyTaskResponse dashboardMyTasks = dashboardService.getDashboardMyTasks();
+
+		return GlobalApiResponse.of(SuccessCode.SUCCESS_DASHBOARD_MY_TASKS, dashboardMyTasks);
 	}
 }
