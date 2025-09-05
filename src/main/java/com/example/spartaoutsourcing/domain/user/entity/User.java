@@ -7,15 +7,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Where;
 
 @Getter
 @Entity
 @Table(name="users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access =  AccessLevel.PRIVATE)
-// 조회 시 삭제된 메시지는 보이지 않음
-@Where(clause = "deleted = false")
+
 public class User extends AuditableEntity {
     @Column(nullable = false, length = 20)
     private String username;

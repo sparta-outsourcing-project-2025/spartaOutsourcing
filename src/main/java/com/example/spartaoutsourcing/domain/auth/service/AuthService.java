@@ -34,7 +34,6 @@ public class AuthService {
         if (userService.existsUserByEmail(registerRequest.getEmail())) {
             throw new GlobalException(ErrorCode.EMAIL_DUPLICATED);
         }
-
         String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
         User userRole = User.of(
                 registerRequest.getUsername(),
@@ -80,7 +79,6 @@ public class AuthService {
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new GlobalException(ErrorCode.DELETE_USER);
         }
-
         user.softDelete();
         return user;
     }
