@@ -1,6 +1,5 @@
 package com.example.spartaoutsourcing.domain.user.dto;
 
-import com.example.spartaoutsourcing.domain.user.entity.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

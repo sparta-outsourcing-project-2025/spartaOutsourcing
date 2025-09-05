@@ -1,6 +1,5 @@
 package com.example.spartaoutsourcing.domain.comment.dto.response;
 
-import com.example.spartaoutsourcing.domain.comment.entity.Comment;
 import com.example.spartaoutsourcing.domain.user.dto.UserCommentResponse;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;

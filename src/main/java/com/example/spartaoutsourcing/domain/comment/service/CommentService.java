@@ -19,8 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +60,7 @@ public class CommentService {
     }
 
     public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
-        Task task = taskRepository.findById(taskId).orElseThrow(
+        taskRepository.findById(taskId).orElseThrow(
                 () -> new GlobalException(ErrorCode.TASK_NOT_FOUND)
         );
         long offset = (page-1) * size;
