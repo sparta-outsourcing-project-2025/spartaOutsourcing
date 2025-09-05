@@ -35,9 +35,4 @@ public class Team extends AuditableEntity {
         this.name = name;
         this.description = description;
     }
-
-    public void updateInfo(String name, String description){
-        this.name = name;
-        this.description = description;
-    }
 }
