@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
+import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
+import com.example.spartaoutsourcing.domain.activity.repository.ActivityRepository;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardActivitiesProjection;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardActivitiesResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskProjection;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardOverDueTaskResponse;
@@ -17,6 +21,7 @@ import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardResp
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardStatsProjection;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardTodayTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUpcomingTaskResponse;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUserInfoResponse;
 import com.example.spartaoutsourcing.domain.member.service.MemberService;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
@@ -36,6 +41,7 @@ public class DashboardService {
 	private final TaskRepository taskRepository;
 	private final TeamRepository teamRepository;
 	private final MemberService memberService;
+	private final ActivityRepository activityRepository;
 
 	/**
 	 * Dashboard 통계 조회
@@ -115,5 +121,25 @@ public class DashboardService {
 		}
 
 		return result;
+	}
+
+	/**
+	 * dashboard 최근 활동 조회
+	 * **/
+	public PageResponseDto<DashboardActivitiesResponse> getDashboardActivities(long page, long size) {
+		long offset = page * size;
+		long limit = size;
+
+		List<DashboardActivitiesProjection> activityAll = activityRepository.findActivityAll(offset, limit);
+
+		List<DashboardActivitiesResponse> list =
+			activityAll.stream()
+			.map(DashboardActivitiesResponse::from).toList();
+
+		Long totalElements = activityRepository.countActivityAll();
+
+		int totalPage= (int)Math.ceil((double)totalElements / size);
+
+		return PageResponseDto.of(list, totalElements, totalPage, page, size);
 	}
 }

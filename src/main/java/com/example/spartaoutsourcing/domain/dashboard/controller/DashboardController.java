@@ -4,12 +4,15 @@ import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.spartaoutsourcing.common.annotation.Auth;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
+import com.example.spartaoutsourcing.common.dto.PageResponseDto;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardActivitiesResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardResponse;
 import com.example.spartaoutsourcing.domain.dashboard.service.DashboardService;
@@ -42,5 +45,17 @@ public class DashboardController {
 		Map<String, Integer> dashboardTeamProgress = dashboardService.getDashboardTeamProgress();
 
 		return GlobalApiResponse.of(SuccessCode.SUCCESS_DASHBOARD_TEAM_PROGRESS, dashboardTeamProgress);
+	}
+
+	@GetMapping("/activities")
+	public GlobalApiResponse<PageResponseDto<DashboardActivitiesResponse>> getDashboardActivities(
+		@Auth AuthUserRequest authUserRequest,
+		@RequestParam(defaultValue = "0") Long page,
+		@RequestParam(defaultValue = "10") Long size) {
+
+		PageResponseDto<DashboardActivitiesResponse> activities =
+			dashboardService.getDashboardActivities(page, size);
+
+		return GlobalApiResponse.of(SuccessCode.SUCCESS_DASHBOARD_ACTIVITIES, activities);
 	}
 }
