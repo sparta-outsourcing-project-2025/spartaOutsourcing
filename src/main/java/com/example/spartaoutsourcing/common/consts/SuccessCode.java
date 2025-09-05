@@ -36,6 +36,7 @@ public enum SuccessCode {
     // MEMBER
     MEMBER_ADDED(200, "멤버가 성공적으로 추가되었습니다."),
     MEMBER_REMOVE(200, "멤버가 성공적으로 제거되었습니다."),
+    AVAILABLE_USER(200, "사용 가능한 사용자 목록을 조회했습니다."),
 
 
     // COMMENT
