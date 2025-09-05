@@ -6,7 +6,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -32,15 +33,21 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String url = request.getRequestURI();
 
-        // /api/auth/register, /api/auth/login 은 검증 제외
+        // /api/auth/register, /api/auth/login 은 JWT 검증 제외
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        if (url.equals("/api")) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String bearerJwt = request.getHeader("Authorization");
 
-        if (bearerJwt == null) {
+        // 운영 환경 기준: JWT 없으면 401 Unauthorized
+        if (bearerJwt == null || bearerJwt.isEmpty()) {
             log.warn("인증 헤더 누락: URI={}", url);
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
             return;
@@ -58,6 +65,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
+            // JWT에서 추출한 정보 request에 주입
             request.setAttribute("userId", Long.parseLong(claims.getSubject()));
             request.setAttribute("email", claims.get("email"));
             request.setAttribute("userRole", userRole);
@@ -84,9 +92,7 @@ public class JwtFilter extends OncePerRequestFilter {
         responseBody.put("success", false);
         responseBody.put("message", message);
         responseBody.put("data", null);
-
-        // AuditableEntity 기준 timestamp
-        responseBody.put("timestamp", LocalDateTime.now()); // Auditable과 동일한 형식 사용
+        responseBody.put("timestamp", LocalDateTime.now());
 
         response.getWriter().write(objectMapper.writeValueAsString(responseBody));
     }
