@@ -9,12 +9,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardMyTaskProjection;
+import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardStatsProjection;
 import com.example.spartaoutsourcing.domain.task.dto.response.TaskProjection;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.example.spartaoutsourcing.domain.user.entity.User;
 
-import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     @EntityGraph(attributePaths = {"user"})
@@ -48,4 +48,28 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 		select count(*) from tasks
 	""", nativeQuery = true)
 	Long countTasksAll();
+
+	@Query(value = """
+		SELECT COUNT(*) AS totalTasks,
+  		SUM(CASE WHEN t.task_status = 'COMPLETED' THEN 1 ELSE 0 END) AS completedTasks,
+  		SUM(CASE WHEN t.task_status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS inProgressTasks,
+  		SUM(CASE WHEN t.task_status = 'TODO' THEN 1 ELSE 0 END) AS todoTasks,
+  		SUM(CASE WHEN t.due_date < current_date() AND t.task_status <> 'COMPLETED' THEN 1 ELSE 0 END) AS overdueTasks,
+  		SUM(CASE WHEN current_date() < t.due_date AND t.task_status <> 'COMPLETED' THEN 1 ELSE 0 END) AS myTasksToday
+  		FROM tasks t
+	""", nativeQuery = true)
+	DashboardStatsProjection findDashboardStats();
+
+	List<Task> findByUser(User user);
+
+	@Query(value = """
+		SELECT t.id, t.title, t.task_status AS taskStatus, t.due_date AS dueDate,
+		CASE WHEN DATE(t.due_date) = current_date() THEN 'TODAY'
+		WHEN DATE(t.due_date) > current_date() THEN 'UPCOMING'
+  		WHEN DATE(t.due_date) < current_date() THEN 'OVERDUE'
+  		END AS taskCategory
+  		FROM tasks t
+  		ORDER BY t.due_date ASC;
+	""", nativeQuery = true)
+	List<DashboardMyTaskProjection> findMyTaskAll();
 }

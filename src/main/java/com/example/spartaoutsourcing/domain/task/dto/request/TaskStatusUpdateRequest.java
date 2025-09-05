@@ -9,5 +9,5 @@ import lombok.Getter;
 public class TaskStatusUpdateRequest {
 
 	@NotNull(message = "상태값은 필수입니다.")
-	private TaskStatus taskStatus;
+	private TaskStatus status;
 }

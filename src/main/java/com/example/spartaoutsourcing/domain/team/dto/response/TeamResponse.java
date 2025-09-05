@@ -1,6 +1,6 @@
 package com.example.spartaoutsourcing.domain.team.dto.response;
 
-import com.example.spartaoutsourcing.domain.member.dto.MemberResponse;
+import com.example.spartaoutsourcing.domain.member.dto.response.MemberResponse;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +25,7 @@ public class TeamResponse {
                 team.getDescription(),
                 team.getCreatedAt(),
                 team.getMembers().stream()
+                        .filter(member -> member.getDeletedAt()==null)
                         .map(MemberResponse::from)
                         .toList()
         );

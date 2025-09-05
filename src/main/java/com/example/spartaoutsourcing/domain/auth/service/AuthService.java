@@ -10,6 +10,8 @@ import com.example.spartaoutsourcing.domain.auth.dto.request.WithdrawRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.LoginResponse;
 import com.example.spartaoutsourcing.domain.auth.dto.request.RegisterRequest;
 import com.example.spartaoutsourcing.domain.auth.dto.response.RegisterResponse;
+import com.example.spartaoutsourcing.domain.member.repository.MemberRepository;
+import com.example.spartaoutsourcing.domain.member.service.MemberService;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.enums.UserRole;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
@@ -24,6 +26,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public RegisterResponse register(RegisterRequest registerRequest) {
@@ -34,7 +38,6 @@ public class AuthService {
         if (userService.existsUserByEmail(registerRequest.getEmail())) {
             throw new GlobalException(ErrorCode.EMAIL_DUPLICATED);
         }
-
         String encodedPassword = passwordEncoder.encode(registerRequest.getPassword());
         User userRole = User.of(
                 registerRequest.getUsername(),
@@ -82,6 +85,9 @@ public class AuthService {
         }
 
         user.softDelete();
+
+        memberService.removeMemberByUser(user);
+
         return user;
     }
 }

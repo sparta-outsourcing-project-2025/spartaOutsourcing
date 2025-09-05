@@ -116,7 +116,7 @@ public class TaskService {
 
 		Task task = getTesKById(taskId);
 
-		task.statusUpdate(taskStatusUpdateRequest.getTaskStatus());
+		task.statusUpdate(taskStatusUpdateRequest.getStatus());
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
 
@@ -158,6 +158,17 @@ public class TaskService {
 		User user = userService.getUserById(authUserRequest.getId());
 
 		return TaskUserInfoResponse.of(user.getId(), user.getEmail(), user.getName(), user.getRole());
+	}
+
+	/**
+	 * Task 삭제
+	 * soft delete를 이용해 논리적으로 삭제한다.
+	 * **/
+	public void delete(Long taskId) {
+		Task task = taskRepository.findById(taskId).orElseThrow(() ->
+			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+
+		task.softDelete();
 	}
 
 	@Transactional(readOnly = true)

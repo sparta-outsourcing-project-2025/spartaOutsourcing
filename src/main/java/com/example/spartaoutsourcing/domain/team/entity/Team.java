@@ -1,7 +1,6 @@
 package com.example.spartaoutsourcing.domain.team.entity;
 
 import com.example.spartaoutsourcing.common.entity.AuditableEntity;
-import com.example.spartaoutsourcing.domain.member.dto.MemberResponse;
 import com.example.spartaoutsourcing.domain.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,8 +22,13 @@ public class Team extends AuditableEntity {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Member> members = new ArrayList<>();
 
-    public static Team of(String name, String description, List<Member> members) {
-        return new Team(name, description, members);
+    public static Team of(String name, String description) {
+        return new Team(name, description,  new ArrayList<>());
+    }
+
+    public void saveMember(Member member){
+        members.add(member);
+        member.setTeam(this);
     }
 
     public void updateInfo(String name, String description){
