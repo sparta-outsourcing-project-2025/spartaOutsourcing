@@ -1,5 +1,7 @@
 package com.example.spartaoutsourcing.domain.dashboard.controller;
 
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,5 +35,12 @@ public class DashboardController {
 		DashboardMyTaskResponse dashboardMyTasks = dashboardService.getDashboardMyTasks();
 
 		return GlobalApiResponse.of(SuccessCode.SUCCESS_DASHBOARD_MY_TASKS, dashboardMyTasks);
+	}
+
+	@GetMapping("/team-progress")
+	public GlobalApiResponse<Map<String, Integer>> getDashboardTeamProgress(@Auth AuthUserRequest authUserRequest) {
+		Map<String, Integer> dashboardTeamProgress = dashboardService.getDashboardTeamProgress();
+
+		return GlobalApiResponse.of(SuccessCode.SUCCESS_DASHBOARD_TEAM_PROGRESS, dashboardTeamProgress);
 	}
 }

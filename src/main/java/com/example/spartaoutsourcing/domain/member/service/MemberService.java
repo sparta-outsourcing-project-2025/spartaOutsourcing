@@ -16,6 +16,7 @@ import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

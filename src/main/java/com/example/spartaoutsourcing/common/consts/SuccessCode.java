@@ -47,7 +47,8 @@ public enum SuccessCode {
 
     //DASHBOARD
     SUCCESS_FIND_DASHBOARD_STATS(200,"대시보드 통계 조회 완료"),
-    SUCCESS_DASHBOARD_MY_TASKS(200, "내 작업 요약 조회 완료");
+    SUCCESS_DASHBOARD_MY_TASKS(200, "내 작업 요약 조회 완료"),
+    SUCCESS_DASHBOARD_TEAM_PROGRESS(200, "팀 진행률 조회 완료");
 
     private final int status;
     private final String message;
