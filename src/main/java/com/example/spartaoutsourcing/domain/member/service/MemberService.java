@@ -1,5 +1,8 @@
 package com.example.spartaoutsourcing.domain.member.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.member.dto.response.MemberResponse;
@@ -14,9 +17,7 @@ import com.example.spartaoutsourcing.domain.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +83,13 @@ public class MemberService{
                         .map(MemberResponse::from)
                         .toList()
         );
+    }
+
+    public List<User> getMembersByTeamId(Long teamId) {
+        return memberRepository.findByTeamId(teamId)
+            .stream()
+            .map(Member::getUser)
+            .collect(Collectors.toList());
     }
 
     /**

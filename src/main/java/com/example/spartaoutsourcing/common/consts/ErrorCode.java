@@ -33,7 +33,10 @@ public enum ErrorCode {
     TEAM_NOT_FOUND("사용자가 이미 팀 멤버입니다", HttpStatus.BAD_REQUEST),
 
     // member
-    USER_ALREADY_TEAM_MEMBER("사용자가 이미 팀 멤버입니다",  HttpStatus.BAD_REQUEST);
+    USER_ALREADY_TEAM_MEMBER("사용자가 이미 팀 멤버입니다",  HttpStatus.BAD_REQUEST),
+
+    //Dashboard
+    DASHBOARD_TEAM_NOT_FOUND("팀을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
 
     private final String message;
     private final HttpStatus httpStatus;
