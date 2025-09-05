@@ -35,4 +35,5 @@ public class Team extends AuditableEntity {
         this.name = name;
         this.description = description;
     }
+
 }
