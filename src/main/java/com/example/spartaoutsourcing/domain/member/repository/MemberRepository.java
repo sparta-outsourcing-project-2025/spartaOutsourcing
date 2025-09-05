@@ -8,9 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>{
-    List<Member> findByTeamId(Long teamId);
     boolean existsByTeamAndUser(Team team, User user);
+    Optional<Member> findByTeamIdAndUserId(Long teamId, Long userId);
+    List<Member> findByUser(User user);
 }
