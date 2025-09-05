@@ -112,4 +112,12 @@ public class TeamService {
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    @Transactional(readOnly=true)
+    public List<User> getAvailableUsers(Long teamId){
+        if (!teamRepository.existsById(teamId)){
+            throw new GlobalException(ErrorCode.TEAM_NOT_FOUND);
+        }
+        return teamRepository.findAvailableUsers(teamId);
+    }
 }
