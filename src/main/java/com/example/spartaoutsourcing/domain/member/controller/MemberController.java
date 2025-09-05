@@ -26,4 +26,13 @@ public class MemberController {
         TeamResponse response = memberService.saveMember(teamId, userId);
         return GlobalApiResponse.of(SuccessCode.MEMBER_ADDED, response);
     }
+
+    @DeleteMapping("/members/{userId}")
+    public GlobalApiResponse<TeamResponse> deleteMember(
+            @PathVariable Long teamId,
+            @PathVariable Long userId
+    ){
+        TeamResponse response = memberService.removeMember(teamId, userId);
+        return GlobalApiResponse.of(SuccessCode.MEMBER_REMOVE, response);
+    }
 }

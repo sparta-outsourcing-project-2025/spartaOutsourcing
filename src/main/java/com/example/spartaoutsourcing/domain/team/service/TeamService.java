@@ -54,7 +54,7 @@ public class TeamService {
                         team.getDescription(),
                         team.getCreatedAt(),
                         team.getMembers().stream()
-                                .filter(member -> member.getUser() != null)
+                                .filter(member -> member.getUser() != null && member.getUser().getDeletedAt() == null) // 탈퇴하지 않은 유저만
                                 .map(MemberResponse::from)
                                 .toList()
                 ))
@@ -86,5 +86,6 @@ public class TeamService {
     public List<Team> getTeamsByKeyword(String keyword) {
         return teamRepository.findTeamsByKeyword(keyword);
     }
+
 
 }
