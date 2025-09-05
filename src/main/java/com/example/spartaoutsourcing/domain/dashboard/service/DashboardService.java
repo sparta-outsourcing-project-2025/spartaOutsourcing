@@ -1,6 +1,8 @@
 package com.example.spartaoutsourcing.domain.dashboard.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -45,14 +47,7 @@ public class DashboardService {
 		Team team = teamRepository.findFirstByOrderByCreatedAtAsc().orElseThrow(() ->
 			new GlobalException(ErrorCode.DASHBOARD_TEAM_NOT_FOUND));
 
-		List<User> members = memberService.getMembersByTeamId(team.getId());
-
-		int teamProgress = (int)members.stream().mapToDouble(member -> {
-			List<Task> tasks = taskRepository.findByUser(member);
-			int total = tasks.size();
-			long completed = tasks.stream().filter(t -> t.getTaskStatus() == TaskStatus.COMPLETED).count();
-			return total == 0 ? 0 : (completed * 100.0 / total);
-		}).average().orElse(0);
+		int teamProgress = getTeamProgress(team);
 
 		List<Task> taskAll = taskRepository.findAll();
 		int totalTask = taskAll.size();
@@ -62,6 +57,18 @@ public class DashboardService {
 		return DashboardResponse.of(dashboardStats.getTotalTasks(), dashboardStats.getCompletedTasks(),
 			dashboardStats.getInProgressTasks(), dashboardStats.getTodoTasks(), dashboardStats.getOverDueTasks(),
 			teamProgress, dashboardStats.getMyTasksToday(), completionRate);
+	}
+
+	private int getTeamProgress(Team team) {
+		List<User> members = memberService.getMembersByTeamId(team.getId());
+
+		int teamProgress = (int)members.stream().mapToDouble(member -> {
+			List<Task> tasks = taskRepository.findByUser(member);
+			int total = tasks.size();
+			long completed = tasks.stream().filter(t -> t.getTaskStatus() == TaskStatus.COMPLETED).count();
+			return total == 0 ? 0 : (completed * 100.0 / total);
+		}).average().orElse(0);
+		return teamProgress;
 	}
 
 	/**
@@ -93,5 +100,20 @@ public class DashboardService {
 			.collect(Collectors.toList());
 
 		return DashboardMyTaskResponse.of(todayTasks, upcomingTasks, overDueTasks);
+	}
+
+	/**
+	 * dashboard 팀 진행률 조회
+	 * **/
+	public Map<String, Integer> getDashboardTeamProgress() {
+		List<Team> teams = teamRepository.findAll();
+		Map<String, Integer> result = new HashMap<>();
+
+		for (Team team : teams) {
+			int teamProgress = getTeamProgress(team);
+			result.put(team.getName(), teamProgress);
+		}
+
+		return result;
 	}
 }
