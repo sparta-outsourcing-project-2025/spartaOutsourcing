@@ -65,8 +65,7 @@ public class TaskService {
 	public TaskResponse getTask(AuthUserRequest authUserRequest, Long taskId) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = taskRepository.findById(taskId).orElseThrow(() ->
-			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+		Task task = getTesKById(taskId);
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
 
@@ -77,8 +76,7 @@ public class TaskService {
 	public TaskResponse update(AuthUserRequest authUserRequest, Long taskId, TaskUpdateRequest taskUpdateRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = taskRepository.findById(taskId).orElseThrow(() ->
-			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+		Task task = getTesKById(taskId);
 
 		task.update(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), taskUpdateRequest.getTaskStatus(),
 			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority());
@@ -116,10 +114,9 @@ public class TaskService {
 	public TaskResponse statusUpdate(AuthUserRequest authUserRequest, Long taskId, TaskStatusUpdateRequest taskStatusUpdateRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = taskRepository.findById(taskId).orElseThrow(() ->
-			new GlobalException(ErrorCode.TASK_NOT_FOUND));
+		Task task = getTesKById(taskId);
 
-		task.statusUpdate(taskStatusUpdateRequest.getTaskStatus());
+		task.statusUpdate(taskStatusUpdateRequest.getStatus());
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
 
@@ -172,5 +169,12 @@ public class TaskService {
 			new GlobalException(ErrorCode.TASK_NOT_FOUND));
 
 		task.softDelete();
+	}
+
+	@Transactional(readOnly = true)
+	public Task getTesKById(Long taskId)
+	{
+		return  taskRepository.findById(taskId).orElseThrow(() ->
+			new GlobalException(ErrorCode.TASK_NOT_FOUND));
 	}
 }

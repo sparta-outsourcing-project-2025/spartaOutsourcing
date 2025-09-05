@@ -16,4 +16,5 @@ public class UserCommentResponse {
     public static UserCommentResponse of(Long id, String username, String name, String email, String role) {
         return new UserCommentResponse(id, username, name, email, role);
     }
+
 }

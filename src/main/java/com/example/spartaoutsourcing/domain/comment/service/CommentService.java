@@ -1,12 +1,11 @@
 package com.example.spartaoutsourcing.domain.comment.service;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
-import com.example.spartaoutsourcing.common.consts.SuccessCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
-import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
+import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.comment.dto.request.CommentSaveRequest;
-import com.example.spartaoutsourcing.domain.comment.dto.response.CommentSaveResponse;
+import com.example.spartaoutsourcing.domain.comment.dto.response.CommentResponse;
 import com.example.spartaoutsourcing.domain.comment.entity.Comment;
 import com.example.spartaoutsourcing.domain.comment.repository.CommentRepository;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
@@ -18,6 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
 @Service
 @RequiredArgsConstructor
 public class CommentService {
@@ -27,7 +30,7 @@ public class CommentService {
     private final TaskRepository taskRepository;
 
     @Transactional
-    public GlobalApiResponse<CommentSaveResponse> save(AuthUserRequest authUserRequest, long taskId, CommentSaveRequest request) {
+    public CommentResponse save(AuthUserRequest authUserRequest, long taskId, CommentSaveRequest request) {
         User user = userRepository.findById(authUserRequest.getId()).orElseThrow(
                 () -> new GlobalException(ErrorCode.USER_NOT_FOUND)
         );
@@ -45,7 +48,7 @@ public class CommentService {
 
         Comment saveComment = commentRepository.save(comment);
 
-        return GlobalApiResponse.of(SuccessCode.CREATED, CommentSaveResponse.of(
+        return CommentResponse.of(
                 saveComment.getId(),
                 saveComment.getContent(),
                 taskId,
@@ -53,6 +56,56 @@ public class CommentService {
                 request.getParentId(),
                 saveComment.getCreatedAt(),
                 saveComment.getModifiedAt()
-        ));
+        );
+    }
+
+    public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
+        taskRepository.findById(taskId).orElseThrow(
+                () -> new GlobalException(ErrorCode.TASK_NOT_FOUND)
+        );
+        long offset = (page-1) * size;
+        List<Comment> rootComments = sort.equalsIgnoreCase("oldest")
+                ? commentRepository.findAllByTaskIdOrderByAsc(taskId, size, offset) : commentRepository.findAllByTaskIdOrderByDesc(taskId, size, offset);
+
+        List<CommentResponse> comments = new ArrayList<>();
+        for (Comment root : rootComments) {
+            comments.add(CommentResponse.of(
+                    root.getId(),
+                    root.getContent(),
+                    taskId,
+                    UserCommentResponse.of(
+                            root.getUser().getId(),
+                            root.getUser().getUsername(),
+                            root.getUser().getName(),
+                            root.getUser().getEmail(),
+                            root.getUser().getRole().toString()
+                    ),
+                    null,
+                    root.getCreatedAt(),
+                    root.getModifiedAt()
+            ));
+            comments.addAll(commentRepository.findAllByParentIdOrderByCreatedAtAsc(root.getId())
+                    .stream()
+                    .map(c -> CommentResponse.of(
+                            c.getId(),
+                            c.getContent(),
+                            taskId,
+                            UserCommentResponse.of(
+                                    c.getUser().getId(),
+                                    c.getUser().getUsername(),
+                                    c.getUser().getName(),
+                                    c.getUser().getEmail(),
+                                    c.getUser().getRole().toString()
+                            ),
+                            root.getId(),
+                            c.getCreatedAt(),
+                            c.getModifiedAt()
+                    ))
+                    .toList()
+            );
+        }
+        Long totalElements = commentRepository.countAllByTaskId(taskId);
+        int totalPage= (int)Math.ceil((double)totalElements / size);
+        return PageResponseDto.of(comments, totalElements, totalPage, size, page);
     }
 }

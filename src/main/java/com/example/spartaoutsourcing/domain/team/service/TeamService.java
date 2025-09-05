@@ -2,23 +2,33 @@ package com.example.spartaoutsourcing.domain.team.service;
 
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
+import com.example.spartaoutsourcing.domain.member.dto.response.MemberResponse;
+import com.example.spartaoutsourcing.domain.member.entity.Member;
+import com.example.spartaoutsourcing.domain.member.repository.MemberRepository;
 import com.example.spartaoutsourcing.domain.team.dto.request.TeamRequest;
 import com.example.spartaoutsourcing.domain.team.dto.response.TeamResponse;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
+import com.example.spartaoutsourcing.domain.user.entity.User;
+import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractAuditable_;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class TeamService {
 
     private final TeamRepository teamRepository;
+    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public TeamResponse save(TeamRequest teamRequest) {
@@ -26,7 +36,7 @@ public class TeamService {
             throw new GlobalException(ErrorCode.TEAM_NAME_DUPLICATED);
         }
 
-        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription(), new ArrayList<>());
+        Team team = Team.of(teamRequest.getName(), teamRequest.getDescription());
         teamRepository.save(team);
 
         return TeamResponse.of(
@@ -41,8 +51,32 @@ public class TeamService {
     @Transactional(readOnly = true)
     public List<TeamResponse> getTeams() {
         return teamRepository.findAll().stream()
-                .map(TeamResponse::from)
+                .map(team -> TeamResponse.of(
+                        team.getId(),
+                        team.getName(),
+                        team.getDescription(),
+                        team.getCreatedAt(),
+                        team.getMembers().stream()
+                                .filter(member -> member.getUser() != null && member.getUser().getDeletedAt() == null) // 탈퇴하지 않은 유저만
+                                .map(MemberResponse::from)
+                                .toList()
+                ))
                 .toList();
+    }
+
+    @Transactional
+    public TeamResponse updateTeam(Long teamId, TeamRequest teamRequest) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+
+        team.updateInfo(teamRequest.getName(), teamRequest.getDescription());
+
+        return TeamResponse.from(team);
+    }
+
+    @Transactional
+    public void delete(Long teamId){
+        Team team = teamRepository.findById(teamId).get();
+        teamRepository.delete(team);
     }
 
     /**
@@ -56,18 +90,17 @@ public class TeamService {
         return teamRepository.findTeamsByKeyword(keyword);
     }
 
-    @Transactional
-    public void delete(Long teamId){
-        Team team = teamRepository.findById(teamId).get();
-        teamRepository.delete(team);
-    }
+    @Transactional(readOnly = true)
+    public TeamResponse getTeamById(Long teamId){
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.TEAM_NOT_FOUND));
 
-    @Transactional
-    public TeamResponse updateTeam(Long teamId, TeamRequest teamRequest) {
-        Team team = teamRepository.findById(teamId).get();
-
-        team.updateInfo(teamRequest.getName(), teamRequest.getDescription());
+        List<MemberResponse> memberResponses = team.getMembers().stream()
+                .map(MemberResponse::from)
+                .filter(Objects::nonNull)
+                .toList();
 
         return TeamResponse.from(team);
     }
+
 }
