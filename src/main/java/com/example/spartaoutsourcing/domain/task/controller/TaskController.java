@@ -55,7 +55,7 @@ public class TaskController {
 
 	@GetMapping("/tasks")
 	public GlobalApiResponse<PageResponseDto<TaskResponse>> getTasks(@Auth AuthUserRequest authUserRequest,
-		@RequestParam(defaultValue = "1") Long page, @RequestParam(defaultValue = "10") Long size, String status, String search, Long assigneeId) {
+		@RequestParam(defaultValue = "0") Long page, @RequestParam(defaultValue = "10") Long size, String status, String search, Long assigneeId) {
 		PageResponseDto<TaskResponse> tasks = taskService.getTasks(page, size, status, search, assigneeId);
 
 		return GlobalApiResponse.of(SuccessCode.TASK_FIND_ALL, tasks);
