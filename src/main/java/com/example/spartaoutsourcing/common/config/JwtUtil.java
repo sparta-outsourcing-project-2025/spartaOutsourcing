@@ -16,7 +16,7 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j(topic = "JwtUtil")
+@Slf4j
 @Component
 public class JwtUtil {
 

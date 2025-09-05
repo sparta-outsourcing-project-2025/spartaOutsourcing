@@ -37,6 +37,9 @@ dependencies {
 	// bcrypt 추가
 	implementation 'at.favre.lib:bcrypt:0.10.2'
 
+	// security 추가
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
 	// jwt 추가
 	compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
