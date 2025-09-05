@@ -87,8 +87,18 @@ public class TeamService {
         return teamRepository.findTeamsByKeyword(keyword);
     }
 
+    @Transactional
+    public void delete(Long teamId){
+        Team team = teamRepository.findById(teamId).get();
+        teamRepository.delete(team);
+    }
 
+    @Transactional
+    public TeamResponse updateTeam(Long teamId, TeamRequest teamRequest) {
+        Team team = teamRepository.findById(teamId).get();
 
+        team.updateInfo(teamRequest.getName(), teamRequest.getDescription());
 
-
+        return TeamResponse.from(team);
+    }
 }

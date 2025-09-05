@@ -48,4 +48,13 @@ public class TeamController {
         teamService.delete(teamId);
         return GlobalApiResponse.of(SuccessCode.TEAM_DELETED, null);
     }
+
+    @PutMapping("/{teamId}")
+    public GlobalApiResponse<TeamResponse> updateTeam(
+            @PathVariable Long teamId,
+            @RequestBody TeamRequest teamRequest
+    ){
+        TeamResponse updatedTeam = teamService.updateTeam(teamId, teamRequest);
+        return GlobalApiResponse.of(SuccessCode.TEAM_UPDATE, updatedTeam);
+    }
 }
