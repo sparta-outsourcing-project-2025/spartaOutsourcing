@@ -95,7 +95,7 @@ public class TaskService {
 	 * */
 	public PageResponseDto<TaskResponse> getTasks(long page, long size, String status, String search, Long assigneeId) {
 
-		long offset = (page - 1) * size;
+		long offset = page * size;
 		long limit = size;
 
 		List<TaskProjection> taskAll = taskRepository.findAll(status, search, assigneeId, offset, limit);
