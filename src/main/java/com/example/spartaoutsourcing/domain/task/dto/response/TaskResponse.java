@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.example.spartaoutsourcing.domain.task.enums.TaskPriority;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class TaskResponse {
 
 	public static TaskResponse from(TaskProjection taskProjection) {
 		return new TaskResponse(taskProjection.getId(), taskProjection.getTitle(), taskProjection.getDescription(),
-			taskProjection.getDueDate(), taskProjection.getTaskPriority(), taskProjection.getTaskStatus(),
+			taskProjection.getDueDate(), taskProjection.getPriority(), taskProjection.getStatus(),
 			taskProjection.getAssigneeId(), Assignee.of(taskProjection.getAssigneeId(), taskProjection.getUsername(),
 			taskProjection.getName(), taskProjection.getEmail()), taskProjection.getCreatedAt(), taskProjection.getUpdatedAt());
 	}

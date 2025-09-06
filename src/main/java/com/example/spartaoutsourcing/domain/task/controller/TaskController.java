@@ -1,5 +1,7 @@
 package com.example.spartaoutsourcing.domain.task.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -55,7 +57,9 @@ public class TaskController {
 
 	@GetMapping("/tasks")
 	public GlobalApiResponse<PageResponseDto<TaskResponse>> getTasks(@Auth AuthUserRequest authUserRequest,
-		@RequestParam(defaultValue = "0") Long page, @RequestParam(defaultValue = "10") Long size, String status, String search, Long assigneeId) {
+		@RequestParam(defaultValue = "0") Long page, @RequestParam(defaultValue = "100") Long size,
+		@RequestParam(required = false) String status, @RequestParam(required = false) String search,
+		@RequestParam(required = false)Long assigneeId) {
 		PageResponseDto<TaskResponse> tasks = taskService.getTasks(page, size, status, search, assigneeId);
 
 		return GlobalApiResponse.of(SuccessCode.TASK_FIND_ALL, tasks);
@@ -70,8 +74,8 @@ public class TaskController {
 	}
 
 	@GetMapping("/users")
-	public GlobalApiResponse<TaskUserInfoResponse> getTaskUserInfo(@Auth AuthUserRequest authUserRequest) {
-		TaskUserInfoResponse taskUserInfo = taskService.getTaskUserInfo(authUserRequest);
+	public GlobalApiResponse<List<TaskUserInfoResponse>> getTaskUserInfo(@Auth AuthUserRequest authUserRequest) {
+		List<TaskUserInfoResponse> taskUserInfo = taskService.getTaskUserInfo(authUserRequest);
 
 		return GlobalApiResponse.of(SuccessCode.OK, taskUserInfo);
 	}

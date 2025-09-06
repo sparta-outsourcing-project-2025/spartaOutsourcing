@@ -57,7 +57,7 @@ public class DashboardService {
 
 		List<Task> taskAll = taskRepository.findAll();
 		int totalTask = taskAll.size();
-		long completed = taskAll.stream().filter(t -> t.getTaskStatus() == TaskStatus.COMPLETED).count();
+		long completed = taskAll.stream().filter(t -> t.getTaskStatus() == TaskStatus.DONE).count();
 		int completionRate = totalTask == 0 ? 0 : (int)(((double)completed / totalTask) * 100);
 
 		return DashboardResponse.of(dashboardStats.getTotalTasks(), dashboardStats.getCompletedTasks(),
@@ -71,7 +71,7 @@ public class DashboardService {
 		int teamProgress = (int)members.stream().mapToDouble(member -> {
 			List<Task> tasks = taskRepository.findByUser(member);
 			int total = tasks.size();
-			long completed = tasks.stream().filter(t -> t.getTaskStatus() == TaskStatus.COMPLETED).count();
+			long completed = tasks.stream().filter(t -> t.getTaskStatus() == TaskStatus.DONE).count();
 			return total == 0 ? 0 : (completed * 100.0 / total);
 		}).average().orElse(0);
 		return teamProgress;
@@ -85,7 +85,7 @@ public class DashboardService {
 
 		List<DashboardTodayTaskResponse> todayTasks = myTaskAll.stream()
 			.filter(today -> "TODAY".equals(today.getTaskCategory()))
-			.filter(today -> today.getTaskStatus() != TaskStatus.COMPLETED)
+			.filter(today -> today.getTaskStatus() != TaskStatus.DONE)
 			.map(today -> DashboardTodayTaskResponse.of(
 				today.getId(), today.getTitle(), today.getTaskStatus(), today.getDueDate()))
 			.collect(Collectors.toList());
@@ -93,14 +93,14 @@ public class DashboardService {
 
 		List<DashboardUpcomingTaskResponse> upcomingTasks = myTaskAll.stream()
 			.filter(upcoming -> "UPCOMING".equals(upcoming.getTaskCategory()))
-			.filter(upcoming -> upcoming.getTaskStatus() != TaskStatus.COMPLETED)
+			.filter(upcoming -> upcoming.getTaskStatus() != TaskStatus.DONE)
 			.map(upcoming -> DashboardUpcomingTaskResponse.of(
 				upcoming.getId(), upcoming.getTitle(), upcoming.getTaskStatus(), upcoming.getDueDate()))
 			.collect(Collectors.toList());
 
 		List<DashboardOverDueTaskResponse> overDueTasks = myTaskAll.stream()
 			.filter(overDue -> "OVERDUE".equals(overDue.getTaskCategory()))
-			.filter(overDue -> overDue.getTaskStatus() != TaskStatus.COMPLETED)
+			.filter(overDue -> overDue.getTaskStatus() != TaskStatus.DONE)
 			.map(overDue -> DashboardOverDueTaskResponse.of(
 				overDue.getId(), overDue.getTitle(), overDue.getTaskStatus(), overDue.getDueDate()))
 			.collect(Collectors.toList());

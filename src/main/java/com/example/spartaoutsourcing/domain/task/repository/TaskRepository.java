@@ -27,7 +27,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	@Query(value = """
 		SELECT t.id AS id, t.title AS title, t.description AS description,
-		t.due_date AS dueDate, t.task_priority AS taskPriority, t.task_status AS taskStatus,
+		t.due_date AS dueDate, t.task_priority AS priority, t.task_status AS status,
 		u.id AS assigneeId, u.username AS username, u.name AS name, u.email AS email,
 		t.created_at AS createdAt, t.modified_at AS updatedAt
 		FROM tasks t 
