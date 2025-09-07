@@ -65,7 +65,7 @@ public class TaskService {
 	public TaskResponse getTask(AuthUserRequest authUserRequest, Long taskId) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = getTesKById(taskId);
+		Task task = getTaskById(taskId);
 
 		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
 
@@ -76,7 +76,7 @@ public class TaskService {
 	public TaskResponse update(AuthUserRequest authUserRequest, Long taskId, TaskUpdateRequest taskUpdateRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = getTesKById(taskId);
+		Task task = getTaskById(taskId);
 
 		task.update(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), taskUpdateRequest.getTaskStatus(),
 			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority());
@@ -111,10 +111,10 @@ public class TaskService {
 	 * Task 상태 업데이트
 	 * status의 ENUM값 변경
 	 * **/
-	public TaskResponse statusUpdate(AuthUserRequest authUserRequest, Long taskId, TaskStatusUpdateRequest taskStatusUpdateRequest) {
+	public TaskResponse updateStatus(AuthUserRequest authUserRequest, Long taskId, TaskStatusUpdateRequest taskStatusUpdateRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = getTesKById(taskId);
+		Task task = getTaskById(taskId);
 
 		task.statusUpdate(taskStatusUpdateRequest.getStatus());
 
@@ -172,7 +172,7 @@ public class TaskService {
 	}
 
 	@Transactional(readOnly = true)
-	public Task getTesKById(Long taskId)
+	public Task getTaskById(Long taskId)
 	{
 		return  taskRepository.findById(taskId).orElseThrow(() ->
 			new GlobalException(ErrorCode.TASK_NOT_FOUND));

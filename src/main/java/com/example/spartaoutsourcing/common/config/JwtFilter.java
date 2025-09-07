@@ -11,9 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-@Order(2)
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -32,15 +31,21 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String url = request.getRequestURI();
+        HttpServletRequest reqToUse = request;
+        if (!(request instanceof ContentCachingRequestWrapper)) {
+            reqToUse = new ContentCachingRequestWrapper(request);
+        }
+
+
+        String url = reqToUse.getRequestURI();
 
         // /api/auth/register, /api/auth/login 은 검증 제외
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(reqToUse, response);
             return;
         }
 
-        String bearerJwt = request.getHeader("Authorization");
+        String bearerJwt = reqToUse.getHeader("Authorization");
 
         if (bearerJwt == null) {
             log.warn("인증 헤더 누락: URI={}", url);
@@ -60,11 +65,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-            request.setAttribute("userId", Long.parseLong(claims.getSubject()));
-            request.setAttribute("email", claims.get("email"));
-            request.setAttribute("userRole", userRole);
+            reqToUse.setAttribute("userId", Long.parseLong(claims.getSubject()));
+            reqToUse.setAttribute("email", claims.get("email"));
+            reqToUse.setAttribute("userRole", userRole);
 
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(reqToUse, response);
 
         } catch (ExpiredJwtException e) {
             log.info("JWT 만료: userId={}, URI={}", e.getClaims().getSubject(), url);

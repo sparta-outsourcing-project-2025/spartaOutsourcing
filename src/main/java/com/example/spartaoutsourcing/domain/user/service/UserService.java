@@ -79,7 +79,7 @@ public class UserService {
      * @return 존재하면 데이터를 가져온다
      */
     @Transactional(readOnly = true)
-    public User findByUsername(String username) {
+    public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new GlobalException(ErrorCode.LOGIN_CHECKED));
     }

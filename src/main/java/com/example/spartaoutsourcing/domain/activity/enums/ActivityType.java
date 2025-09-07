@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ActivityType {
-    TASK_CREATED("작업 생성", "새로운 작업 '{1}' 를 생성했습니다."),
+    TASK_CREATED("작업 생성", "새로운 작업 '{1}'을 생성했습니다."),
     TASK_UPDATED("작업 수정","작업 정보를 수정했습니다."),
     TASK_DELETED("작업 삭제", "작업을 삭제했습니다."),
     TASK_STATUS_CHANGED("작업 상태 변경", "작업 상태를 {1}에서 {2}로 변경했습니다."),
