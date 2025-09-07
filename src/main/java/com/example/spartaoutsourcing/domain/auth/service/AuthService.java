@@ -66,7 +66,6 @@ public class AuthService {
             throw new GlobalException(ErrorCode.LOGIN_CHECKED);
         }
         String token = jwtUtil.createToken(user.getId(), user.getUsername(), user.getRole());
-
         return new LoginResponse(token);
     }
 

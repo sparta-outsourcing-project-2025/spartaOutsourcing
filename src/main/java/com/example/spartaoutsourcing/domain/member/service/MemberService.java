@@ -15,18 +15,18 @@ import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @RequiredArgsConstructor
-public class MemberService{
+public class MemberService {
 
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
 
     /**
      * 팀에 유저를 멤버로 추가
@@ -48,7 +48,7 @@ public class MemberService{
             throw new GlobalException(ErrorCode.USER_NOT_FOUND);
         }
 
-        if (memberRepository.existsByTeamAndUser(team, user)){
+        if (memberRepository.existsByTeamAndUser(team, user)) {
             throw new GlobalException(ErrorCode.USER_ALREADY_TEAM_MEMBER);
         }
 
@@ -76,13 +76,13 @@ public class MemberService{
      * @return 제거 후 팀 정보와 현재 팀 멤버 리스트를 담은 TeamResponse
      */
     @Transactional
-    public TeamResponse removeMember(Long teamId, Long userId){
+    public TeamResponse removeMember(Long teamId, Long userId) {
         Team team = teamRepository.findById(teamId).orElse(null);
 
         Member member = memberRepository.findByTeamIdAndUserId(teamId, userId)
                 .orElse(null);
 
-        if (member!=null){
+        if (member != null) {
             team.getMembers().remove(member);
             memberRepository.delete(member);
         }
@@ -97,6 +97,13 @@ public class MemberService{
                         .map(MemberResponse::from)
                         .toList()
         );
+    }
+
+    public List<User> getMembersByTeamId(Long teamId) {
+        return memberRepository.findByTeamId(teamId)
+                .stream()
+                .map(Member::getUser)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -118,10 +125,9 @@ public class MemberService{
      * @param user 탈퇴하는 유저 엔티티
      */
     @Transactional
-    public void removeMemberByUser(User user){
+    public void removeMemberByUser(User user) {
         List<Member> members = memberRepository.findByUser(user);
         memberRepository.deleteAll(members);
 
     }
-
 }

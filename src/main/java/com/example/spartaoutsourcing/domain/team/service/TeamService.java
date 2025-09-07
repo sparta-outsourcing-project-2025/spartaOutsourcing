@@ -10,7 +10,9 @@ import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.AbstractAuditable_;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +25,6 @@ import java.util.Objects;
 public class TeamService {
 
     private final TeamRepository teamRepository;
-    private final UserRepository userRepository;
-    private final MemberRepository memberRepository;
 
     /**
      * 새로운 팀 생성
@@ -41,6 +41,7 @@ public class TeamService {
 
         Team team = Team.of(teamRequest.getName(), teamRequest.getDescription());
         teamRepository.save(team);
+
 
         return TeamResponse.of(
                 team.getId(),
@@ -114,7 +115,6 @@ public class TeamService {
     public List<Team> getTeamsByKeyword(String keyword) {
         return teamRepository.findTeamsByKeyword(keyword);
     }
-
     /**
      * 단일 팀 조회
      *
@@ -142,6 +142,15 @@ public class TeamService {
      * @return 팀 멤버 리스트(MemberResponse)
      * @throws GlobalException 팀이 존재하지 않을 경우 ErrorCode.TEAM_NOT_FOUND
      */
+
+        List<MemberResponse> memberResponses = team.getMembers().stream()
+                .map(MemberResponse::from)
+                .filter(Objects::nonNull)
+                .toList();
+
+        return TeamResponse.from(team);
+    }
+
     @Transactional(readOnly=true)
     public List<MemberResponse> getMembersByTeamId(Long teamId) {
 

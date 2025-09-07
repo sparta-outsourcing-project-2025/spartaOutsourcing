@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/teams")
 public class TeamController {
     private final TeamService teamService;
 
@@ -28,7 +27,7 @@ public class TeamController {
      * @return 생성된 팀 정보(GlobalApiResponse<TeamResponse>)
      *         성공 시 SuccessCode.TEAM_CREATED 반환
      */
-    @PostMapping
+    @PostMapping("/api/teams")
     public GlobalApiResponse<TeamResponse> save(
             @Valid @RequestBody TeamRequest teamRequest
     ){
@@ -44,7 +43,7 @@ public class TeamController {
      * @return 전체 팀 리스트(GlobalApiResponse<List<TeamResponse>>)
      *         성공 시 SuccessCode.SUCCESS_GET_TEAM 반환
      */
-    @GetMapping
+    @GetMapping("/api/teams")
     public GlobalApiResponse<List<TeamResponse>> getTeams()
     {
         List<TeamResponse> result = teamService.getTeams();
@@ -61,7 +60,7 @@ public class TeamController {
      * @return 수정된 팀 정보(GlobalApiResponse<TeamResponse>)
      *         성공 시 SuccessCode.TEAM_UPDATE 반환
      */
-    @PutMapping("/{teamId}")
+    @PutMapping("/api/teams/{teamId}")
     public GlobalApiResponse<TeamResponse> updateTeam(
             @PathVariable Long teamId,
             @RequestBody TeamRequest teamRequest
@@ -79,7 +78,7 @@ public class TeamController {
      * @return 삭제 완료 후 응답(GlobalApiResponse<Void>)
      *         성공 시 SuccessCode.TEAM_DELETED 반환
      */
-    @DeleteMapping("/{teamId}")
+    @DeleteMapping("/api/teams/{teamId}")
     public GlobalApiResponse<Void> delete(
             @PathVariable Long teamId
     ){
@@ -96,7 +95,7 @@ public class TeamController {
      * @return 팀 정보(GlobalApiResponse<TeamResponse>)
      *         성공 시 SuccessCode.TEAM_FOUND 반환
      */
-    @GetMapping("/{teamId}")
+    @GetMapping("/api/teams/{teamId}")
     public GlobalApiResponse<TeamResponse> getTeam(
             @PathVariable Long teamId
     ){
@@ -113,6 +112,7 @@ public class TeamController {
      * @return 해당 팀 멤버 리스트(GlobalApiResponse<List<MemberResponse>>)
      *         성공 시 SuccessCode.TEAM_MEMBERS_RETRIEVED 반환
      */
+
     @GetMapping("/api/teams/{teamId}/members")
     public GlobalApiResponse<List<MemberResponse>> getTeamMembers(
             @PathVariable Long teamId
