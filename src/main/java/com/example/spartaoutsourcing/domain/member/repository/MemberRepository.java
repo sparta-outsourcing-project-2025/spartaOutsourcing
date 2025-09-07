@@ -6,7 +6,6 @@ import com.example.spartaoutsourcing.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +13,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long>{
     boolean existsByTeamAndUser(Team team, User user);
     Optional<Member> findByTeamIdAndUserId(Long teamId, Long userId);
-    List<Member> findByTeamId(Long teamId);
     List<Member> findByUser(User user);
+    List<Member> findByTeamId(Long teamId);
 }

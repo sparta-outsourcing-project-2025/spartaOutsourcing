@@ -26,7 +26,6 @@ public class MemberService{
     private final MemberRepository memberRepository;
     private final TeamRepository teamRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
 
     public TeamResponse saveMember(Long teamId, Long userId) {
 

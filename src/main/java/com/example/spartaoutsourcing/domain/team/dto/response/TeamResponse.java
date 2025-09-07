@@ -25,6 +25,7 @@ public class TeamResponse {
                 team.getDescription(),
                 team.getCreatedAt(),
                 team.getMembers().stream()
+                        .filter(member -> member.getDeletedAt()==null)
                         .map(MemberResponse::from)
                         .toList()
         );
