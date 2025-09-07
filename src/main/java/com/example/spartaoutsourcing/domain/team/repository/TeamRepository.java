@@ -1,6 +1,7 @@
 package com.example.spartaoutsourcing.domain.team.repository;
 
 import com.example.spartaoutsourcing.domain.team.entity.Team;
+import com.example.spartaoutsourcing.domain.user.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,4 +20,6 @@ public interface TeamRepository extends JpaRepository <Team, Long> {
     List<Team> findAll();
 
     Optional<Team> findFirstByOrderByCreatedAtAsc();
+
+    List<User> findAvailableUsers(Long teamId);
 }

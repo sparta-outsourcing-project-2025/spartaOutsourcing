@@ -13,12 +13,11 @@ import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,13 @@ public class MemberService{
     private final UserRepository userRepository;
     private final UserService userService;
 
+    /**
+     * 팀에 유저를 멤버로 추가
+     * @param teamId 팀 ID
+     * @param userId 유저 ID
+     * @return 추가 후 팀 정보와 현재 팀 멤버 리스트를 담은 TeamResponse
+     * @Throws GlobalException 팀이 존재하지 않거나 유저가 존재하지 않거나 이미 팀 멤버인 경우
+     */
     public TeamResponse saveMember(Long teamId, Long userId) {
 
         Team team = teamRepository.findById(teamId)
@@ -62,6 +68,13 @@ public class MemberService{
         );
     }
 
+    /**
+     * 팀에서 특정 유저를 멤버에서 제거
+     *
+     * @param teamId 팀 ID
+     * @param userId 제거할 유저 ID
+     * @return 제거 후 팀 정보와 현재 팀 멤버 리스트를 담은 TeamResponse
+     */
     @Transactional
     public TeamResponse removeMember(Long teamId, Long userId){
         Team team = teamRepository.findById(teamId).orElse(null);
@@ -87,7 +100,22 @@ public class MemberService{
     }
 
     /**
-     * 유저가 탈퇴할 때 해당 유저를 팀 멤버에서 제거
+     * 팀 ID로 팀 멤버(User) 리스트 조회
+     *
+     * @param teamId 팀 ID
+     * @return 해당 팀에 속한 유저 리스트
+     */
+    public List<User> getMembersByTeamId(Long teamId) {
+        return memberRepository.findByTeamId(teamId)
+                .stream()
+                .map(Member::getUser)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 유저가 탈퇴할 때 해당 유저를 모든 팀에서 제거
+     *
+     * @param user 탈퇴하는 유저 엔티티
      */
     @Transactional
     public void removeMemberByUser(User user){
@@ -96,10 +124,4 @@ public class MemberService{
 
     }
 
-    public List<User> getMembersByTeamId(Long teamId) {
-        return memberRepository.findByTeamId(teamId)
-            .stream()
-            .map(Member::getUser)
-            .collect(Collectors.toList());
-    }
 }
