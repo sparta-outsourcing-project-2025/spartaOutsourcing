@@ -37,8 +37,6 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        String url = httpRequest.getRequestURI();
-
         /** 특정 URL 필터 제외
          *  로그인, 회원가입 요청은 JWT 인증 없이 통과
          */
