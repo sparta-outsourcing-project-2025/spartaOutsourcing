@@ -37,6 +37,7 @@ public class TeamService {
         Team team = Team.of(teamRequest.getName(), teamRequest.getDescription());
         teamRepository.save(team);
 
+
         return TeamResponse.of(
                 team.getId(),
                 team.getName(),
@@ -55,7 +56,7 @@ public class TeamService {
                         team.getDescription(),
                         team.getCreatedAt(),
                         team.getMembers().stream()
-                                .filter(member -> member.getUser() != null && member.getUser().getDeletedAt() == null) // 탈퇴하지 않은 유저만
+                                .filter(member -> member.getUser() != null && member.getUser().getDeletedAt() == null)
                                 .map(MemberResponse::from)
                                 .toList()
                 ))
@@ -64,7 +65,9 @@ public class TeamService {
 
     @Transactional
     public TeamResponse updateTeam(Long teamId, TeamRequest teamRequest) {
-        Team team = teamRepository.findById(teamId).orElse(null);
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.TEAM_NOT_FOUND));
+
 
         team.updateInfo(teamRequest.getName(), teamRequest.getDescription());
 
@@ -73,7 +76,8 @@ public class TeamService {
 
     @Transactional
     public void delete(Long teamId){
-        Team team = teamRepository.findById(teamId).get();
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.TEAM_NOT_FOUND));
         teamRepository.delete(team);
     }
 
@@ -111,5 +115,13 @@ public class TeamService {
                 .map(MemberResponse::from)
                 .filter(Objects::nonNull)
                 .toList();
+    }
+
+    @Transactional(readOnly=true)
+    public List<User> getAvailableUsers(Long teamId){
+        if (!teamRepository.existsById(teamId)){
+            throw new GlobalException(ErrorCode.TEAM_NOT_FOUND);
+        }
+        return teamRepository.findAvailableUsers(teamId);
     }
 }

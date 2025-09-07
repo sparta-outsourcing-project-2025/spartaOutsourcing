@@ -93,10 +93,9 @@ public class TaskService {
 	 * Task 전체 목록 조회
 	 * 페이지네이션과 검색 기능
 	 * */
-	public PageResponseDto<TaskResponse> getTasks(long page, long size, String status, String search, Long assigneeId) {
-
-		long offset = (page-1) * size;
-		long limit = size;
+	public PageResponseDto<TaskResponse> getTasks(Long page, Long size, String status, String search, Long assigneeId) {
+		Long offset = page * size;
+		Long limit = size;
 
 		List<TaskProjection> taskAll = taskRepository.findAll(status, search, assigneeId, offset, limit);
 
@@ -151,13 +150,15 @@ public class TaskService {
 
 	/**
 	 * 추가적으로 필요한 API
-	 * Task 옆 사용자의 정보를 반환
+	 * Task 모든 사용자의 정보를 반환
 	 * **/
 	@Transactional(readOnly = true)
-	public TaskUserInfoResponse getTaskUserInfo(AuthUserRequest authUserRequest) {
-		User user = userService.getUserById(authUserRequest.getId());
+	public List<TaskUserInfoResponse> getTaskUserInfo(AuthUserRequest authUserRequest) {
+		List<User> users = userService.getUsers();
 
-		return TaskUserInfoResponse.of(user.getId(), user.getEmail(), user.getName(), user.getRole());
+		return users.stream().map(user ->
+			TaskUserInfoResponse.of(user.getId(), user.getEmail(), user.getName(), user.getRole())).collect(
+			Collectors.toList());
 	}
 
 	/**

@@ -42,6 +42,7 @@ public class JwtFilter implements Filter {
         /** 특정 URL 필터 제외
          *  로그인, 회원가입 요청은 JWT 인증 없이 통과
          */
+        String url = httpRequest.getRequestURI();
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
             chain.doFilter(request, response);
             return;
@@ -83,6 +84,7 @@ public class JwtFilter implements Filter {
             httpRequest.setAttribute("userRole", userRole);
 
 
+            // 관리자 권한 체크
             if (url.startsWith("/admin") && !UserRole.ADMIN.equals(userRole)) {
                 sendErrorResponse(httpResponse, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
                 return;
