@@ -1,5 +1,5 @@
 package com.example.spartaoutsourcing.domain.task.enums;
 
 public enum TaskStatus {
-	TODO, IN_PROGRESS, COMPLETED
+	TODO, IN_PROGRESS, COMPLETED, DONE
 }

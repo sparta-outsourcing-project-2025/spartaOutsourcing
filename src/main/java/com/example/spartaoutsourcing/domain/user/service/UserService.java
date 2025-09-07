@@ -94,4 +94,9 @@ public class UserService {
     public List<User> getUsersByKeyword(String keyword) {
         return userRepository.findUsersByKeyword(keyword);
     }
+
+    @Transactional(readOnly = true)
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
 }
