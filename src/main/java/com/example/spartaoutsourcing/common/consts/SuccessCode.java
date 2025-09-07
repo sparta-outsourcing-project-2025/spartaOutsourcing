@@ -38,11 +38,11 @@ public enum SuccessCode {
     MEMBER_REMOVE(200, "멤버가 성공적으로 제거되었습니다."),
     AVAILABLE_USER(200, "사용 가능한 사용자 목록을 조회했습니다."),
 
-
     // COMMENT
     COMMENT_FIND(200,"댓글을 조회했습니다."),
     COMMENT_UPDATED(200, "댓글이 수정되었습니다."),
     COMMENT_CREATED(201, "댓글이 생성되었습니다."),
+    COMMENT_DELETED(200, "댓글이 삭제되었습니다."),
 
     // SEARCH
     SUCCESS_SEARCH(200,"검색 완료"),

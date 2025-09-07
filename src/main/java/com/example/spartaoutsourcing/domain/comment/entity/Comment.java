@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -41,5 +43,13 @@ public class Comment extends AuditableEntity {
 
     public static Comment of(User user, Task task, String content, Comment parent) {
         return new Comment(user, task, content, parent);
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
+
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
