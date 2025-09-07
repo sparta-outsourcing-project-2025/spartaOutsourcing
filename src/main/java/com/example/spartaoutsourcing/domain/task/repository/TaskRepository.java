@@ -72,4 +72,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   		ORDER BY t.due_date ASC;
 	""", nativeQuery = true)
 	List<DashboardMyTaskProjection> findMyTaskAll();
+
+	@Query("SELECT t FROM Task t WHERE (:status IS NULL OR t.taskStatus = :status) ORDER BY t.id DESC")
+	List<Task> findAllByStatus(@Param("status") String status, @Param("offset") long offset, @Param("limit") long limit);
+
+	@Query("SELECT COUNT(t) FROM Task t WHERE (:status IS NULL OR t.taskStatus = :status)")
+	long countByStatus(@Param("status") String status);
 }
