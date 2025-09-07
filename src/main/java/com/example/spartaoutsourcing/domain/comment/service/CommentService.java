@@ -56,6 +56,7 @@ public class CommentService {
         );
     }
 
+    @Transactional(readOnly = true)
     public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
         taskService.getTesKById(taskId);
         long offset = (page-1) * size;
@@ -104,6 +105,7 @@ public class CommentService {
         return PageResponseDto.of(comments, totalElements, totalPage, size, page);
     }
 
+    @Transactional
     public CommentResponse updateComment(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
         Task task = taskService.getTesKById(taskId);
         Comment comment = commentRepository.findById(commentId).orElseThrow(
@@ -131,7 +133,7 @@ public class CommentService {
         );
     }
 
-
+    @Transactional
     public void deleteComment(AuthUserRequest authUserRequest, Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow( () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
         if (!comment.getUser().getId().equals(authUserRequest.getId())) {
