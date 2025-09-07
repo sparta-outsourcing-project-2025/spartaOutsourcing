@@ -30,7 +30,7 @@ public enum ErrorCode {
     // team
     TEAM_NAME_DUPLICATED("팀 이름이 이미 존재합니다",HttpStatus.BAD_REQUEST),
     MEMBER_ALREADY_EXISTS("사용자가 이미 팀 멤버입니다", HttpStatus.BAD_REQUEST),
-    TEAM_NOT_FOUND("사용자가 이미 팀 멤버입니다", HttpStatus.BAD_REQUEST),
+    TEAM_NOT_FOUND("삭제되었거나 존재하지 않는 팀입니다.", HttpStatus.BAD_REQUEST),
 
     // member
     USER_ALREADY_TEAM_MEMBER("사용자가 이미 팀 멤버입니다",  HttpStatus.BAD_REQUEST),
