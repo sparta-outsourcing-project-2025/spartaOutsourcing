@@ -37,14 +37,19 @@ public class JwtFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
+        /** 특정 URL 필터 제외
+         *  로그인, 회원가입 요청은 JWT 인증 없이 통과
+         */
         String url = httpRequest.getRequestURI();
-
-        // 회원가입/로그인 예외
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
             chain.doFilter(request, response);
             return;
         }
 
+        /**
+         * Authorization: Bearer 토큰  헤더가 없으면
+         * 401 UNAUTHORIZED 발생
+         */
         String bearerJwt = httpRequest.getHeader("Authorization");
         if (bearerJwt == null || bearerJwt.isEmpty()) {
             sendErrorResponse(httpResponse, HttpStatus.UNAUTHORIZED, "인증 헤더 누락");
@@ -64,7 +69,6 @@ public class JwtFilter implements Filter {
             String email = claims.get("email", String.class);
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-            // SecurityContext 저장
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             userId,
@@ -73,10 +77,10 @@ public class JwtFilter implements Filter {
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // AuthUserArgumentResolver용 request attribute
             httpRequest.setAttribute("userId", userId);
             httpRequest.setAttribute("email", email);
             httpRequest.setAttribute("userRole", userRole);
+
 
             // 관리자 권한 체크
             if (url.startsWith("/admin") && !UserRole.ADMIN.equals(userRole)) {

@@ -21,6 +21,7 @@ public interface TeamRepository extends JpaRepository <Team, Long> {
 
     Optional<Team> findFirstByOrderByCreatedAtAsc();
 
+
     @Query("SELECT u FROM User u " +
             "WHERE u.deletedAt IS NULL AND NOT EXISTS (" +
             "SELECT 1 FROM Member m WHERE m.user = u AND m.team.id = :teamId)")

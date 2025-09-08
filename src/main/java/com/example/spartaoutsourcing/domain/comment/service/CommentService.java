@@ -108,7 +108,9 @@ public class CommentService {
     @Transactional
     public CommentResponse updateComment(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
         Task task = taskService.getTesKById(taskId);
+
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
+
                 () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
         );
         if (!comment.getUser().getId().equals(authUserRequest.getId())) {
@@ -135,9 +137,11 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(AuthUserRequest authUserRequest, Long commentId) {
+
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
                 () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
         );
+
         if (!comment.getUser().getId().equals(authUserRequest.getId())) {
             throw new GlobalException(ErrorCode.FORBIDDEN);
         }

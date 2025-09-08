@@ -52,4 +52,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     Optional<Comment> findByIdAndDeletedAtIsNull(@NonNull Long id);
 
     List<Comment> findAllByParentIdAndDeletedAtIsNull(Long parentId);
+
 }

@@ -37,18 +37,14 @@ public class JwtUtil {
     public String createToken(Long userId, String email, UserRole userRole) {
         Date date = new Date();
 
-        /**
-         * 하나의 토큰안에 userId와 username을 담는다
-         * 담고 싶음 정보가 있다면 추가추가
-         */
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(String.valueOf(userId))
                         .claim("email", email)
                         .claim("userRole", userRole)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
-                        .setIssuedAt(date) // 발급일
-                        .signWith(key, signatureAlgorithm) // 암호화 알고리즘
+                        .setIssuedAt(date)
+                        .signWith(key, signatureAlgorithm)
                         .compact();
     }
 
