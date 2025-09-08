@@ -54,7 +54,7 @@ public class CommentController {
             @PathVariable("commentId") Long commentId,
             @PathVariable("taskId") Long taskId
     ) {
-        commentService.delete(authUserRequest, commentId, taskId);
+        commentService.delete(authUserRequest, commentId);
         return GlobalApiResponse.of(SuccessCode.COMMENT_DELETED,null);
     }
 }

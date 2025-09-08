@@ -60,7 +60,7 @@ public class CommentService {
     @Transactional(readOnly = true)
     public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
 
-        taskService.getTesKById(taskId);
+        taskService.getTaskById(taskId);
         long offset = page * size;
         List<CommentProjection> rootComments = sort.equalsIgnoreCase("oldest")
 
@@ -139,7 +139,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void delete(AuthUserRequest authUserRequest, Long commentId, Long taskId) {
+    public void delete(AuthUserRequest authUserRequest, Long commentId) {
 
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
                 () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
