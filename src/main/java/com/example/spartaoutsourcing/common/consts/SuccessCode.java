@@ -31,16 +31,19 @@ public enum SuccessCode {
     TEAM_DELETED(200, "팀이 성공적으로 삭제되었습니다."),
     TEAM_UPDATE(200, "팀 정보가 성공적으로 업데이트되었습니다."),
     TEAM_FOUND(200, "팀 정보를 조회했습니다."),
+    TEAM_MEMBERS_RETRIEVED(200, "팀 멤버 목록을 조회했습니다."),
 
     // MEMBER
     MEMBER_ADDED(200, "멤버가 성공적으로 추가되었습니다."),
     MEMBER_REMOVE(200, "멤버가 성공적으로 제거되었습니다."),
+    AVAILABLE_USER(200, "사용 가능한 사용자 목록을 조회했습니다."),
 
 
     // COMMENT
     COMMENT_FIND(200,"댓글을 조회했습니다."),
     COMMENT_UPDATED(200, "댓글이 수정되었습니다."),
     COMMENT_CREATED(201, "댓글이 생성되었습니다."),
+    COMMENT_DELETED(200, "댓글이 삭제되었습니다."),
 
     // SEARCH
     SUCCESS_SEARCH(200,"검색 완료"),
@@ -50,6 +53,7 @@ public enum SuccessCode {
     SUCCESS_FIND_DASHBOARD_STATS(200,"대시보드 통계 조회 완료"),
     SUCCESS_DASHBOARD_MY_TASKS(200, "내 작업 요약 조회 완료"),
     SUCCESS_DASHBOARD_TEAM_PROGRESS(200, "팀 진행률 조회 완료"),
+    SUCCESS_DASHBOARD_ACTIVITIES(200, "활동 내역 조회 완료"),
 
     //ACTIVITY
     SUCCESS_FIND_ACTIVITY(200,"활동 로그를 조회했습니다");

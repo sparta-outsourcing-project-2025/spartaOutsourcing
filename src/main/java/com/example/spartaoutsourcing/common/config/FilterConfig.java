@@ -18,11 +18,7 @@ public class FilterConfig {
         FilterRegistrationBean<JwtFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new JwtFilter(jwtUtil, objectMapper));
         registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(2);
 
         return registrationBean;
     }
-
-
-
 }

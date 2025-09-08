@@ -6,13 +6,12 @@ import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.dto.GlobalApiResponse;
 import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.domain.comment.dto.request.CommentSaveRequest;
+import com.example.spartaoutsourcing.domain.comment.dto.request.CommentUpdateRequest;
 import com.example.spartaoutsourcing.domain.comment.dto.response.CommentResponse;
 import com.example.spartaoutsourcing.domain.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +36,24 @@ public class CommentController {
             @RequestParam(defaultValue = "newest") String sort
     ) {
         return GlobalApiResponse.of(SuccessCode.COMMENT_FIND, commentService.getComments(taskId, page, size, sort));
+    }
+
+    @PutMapping("/api/tasks/{taskId}/comments/{commentId}")
+    public GlobalApiResponse<CommentResponse> updateComment(
+            @Auth AuthUserRequest authUserRequest,
+            @PathVariable("commentId") Long commentId,
+            @PathVariable("taskId") Long taskId,
+            @Valid @RequestBody CommentUpdateRequest request
+    ) {
+        return GlobalApiResponse.of(SuccessCode.COMMENT_UPDATED, commentService.updateComment(authUserRequest, commentId, taskId, request));
+    }
+
+    @DeleteMapping("/api/tasks/{taskId}/comments/{commentId}")
+    public GlobalApiResponse<Void> deleteComment(
+            @Auth AuthUserRequest authUserRequest,
+            @PathVariable("commentId") Long commentId
+    ) {
+        commentService.deleteComment(authUserRequest, commentId);
+        return GlobalApiResponse.of(SuccessCode.COMMENT_DELETED,null);
     }
 }

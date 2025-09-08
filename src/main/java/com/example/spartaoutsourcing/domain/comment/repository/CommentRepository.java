@@ -1,12 +1,14 @@
 package com.example.spartaoutsourcing.domain.comment.repository;
 
 import com.example.spartaoutsourcing.domain.comment.entity.Comment;
+import lombok.NonNull;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
@@ -43,4 +45,11 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByParentIdOrderByCreatedAtAsc(Long parentId);
 
     Long countAllByTaskId(Long taskId);
+
+    @Override
+    @NonNull
+    @EntityGraph(attributePaths = {"user","parent"})
+    Optional<Comment> findById(@NonNull Long id);
+
+    List<Comment> findAllByParentId(Long parentId);
 }

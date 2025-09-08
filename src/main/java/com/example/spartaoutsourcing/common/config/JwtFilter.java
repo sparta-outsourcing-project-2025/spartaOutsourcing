@@ -14,11 +14,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +42,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String url = reqToUse.getRequestURI();
 
-        // /api/auth/register, /api/auth/login 은 검증 제외
+        // 회원가입/로그인 예외
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
             filterChain.doFilter(reqToUse, response);
             return;
@@ -47,39 +50,53 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String bearerJwt = reqToUse.getHeader("Authorization");
 
-        if (bearerJwt == null) {
-            log.warn("인증 헤더 누락: URI={}", url);
-            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
+        if (bearerJwt == null || bearerJwt.isEmpty()) {
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "인증 헤더 누락");
             return;
         }
 
-        String jwt = jwtUtil.substringToken(bearerJwt);
-
         try {
+            String jwt = jwtUtil.substringToken(bearerJwt);
             Claims claims = jwtUtil.extractClaims(jwt);
+
             if (claims == null) {
-                log.warn("Claims 추출 실패: URI={}", url);
-                sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
+                sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Claims 추출 실패");
                 return;
             }
 
+            Long userId = Long.parseLong(claims.getSubject());
+            String email = claims.get("email", String.class);
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-            reqToUse.setAttribute("userId", Long.parseLong(claims.getSubject()));
-            reqToUse.setAttribute("email", claims.get("email"));
-            reqToUse.setAttribute("userRole", userRole);
+            // SecurityContext 저장
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userId,
+                            email,
+                            List.of(new SimpleGrantedAuthority("ROLE_" + userRole.name()))
+                    );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            filterChain.doFilter(reqToUse, response);
+            // AuthUserArgumentResolver용 request attribute
+            httpRequest.setAttribute("userId", userId);
+            httpRequest.setAttribute("email", email);
+            httpRequest.setAttribute("userRole", userRole);
+
+            // 관리자 권한 체크
+            if (url.startsWith("/admin") && !UserRole.ADMIN.equals(userRole)) {
+                sendErrorResponse(response, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
+                return;
+            }
+
+            chain.doFilter(reqToUse, response);
 
         } catch (ExpiredJwtException e) {
-            log.info("JWT 만료: userId={}, URI={}", e.getClaims().getSubject(), url);
-            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "토큰이 만료되었습니다.");
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "토큰 만료");
         } catch (SecurityException | MalformedJwtException | UnsupportedJwtException e) {
-            log.error("JWT 검증 실패 [{}]: URI={}", e.getClass().getSimpleName(), url, e);
-            sendErrorResponse(response, HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다.");
+            sendErrorResponse(response, HttpStatus.BAD_REQUEST, "유효하지 않은 토큰");
         } catch (Exception e) {
             log.error("예상치 못한 오류: URI={}", url, e);
-            sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "서버 처리 중 오류가 발생했습니다.");
+            sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "서버 처리 중 오류 발생");
         }
     }
 
@@ -87,14 +104,11 @@ public class JwtFilter extends OncePerRequestFilter {
         response.setStatus(status.value());
         response.setContentType("application/json;charset=UTF-8");
 
-        Map<String, Object> responseBody = new LinkedHashMap<>();
-        responseBody.put("success", false);
-        responseBody.put("message", message);
-        responseBody.put("data", null);
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", status.name());
+        errorResponse.put("code", status.value());
+        errorResponse.put("message", message);
 
-        // AuditableEntity 기준 timestamp
-        responseBody.put("timestamp", LocalDateTime.now()); // Auditable과 동일한 형식 사용
-
-        response.getWriter().write(objectMapper.writeValueAsString(responseBody));
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }
