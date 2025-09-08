@@ -41,7 +41,7 @@ public class AuthController {
         return GlobalApiResponse.of(SuccessCode.SUCCESS_LOGIN, response);
     }
 
-    @DeleteMapping("/withdraw")
+    @PostMapping("/withdraw")
     public GlobalApiResponse<UserResponse> withdraw(@Auth AuthUserRequest authUser,
                                                     @Valid @RequestBody WithdrawRequest request) {
         User user = authService.withdrawUser(authUser, request);
