@@ -53,21 +53,30 @@ public class ActivityLoggingAspect {
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.comment.service.CommentService.save(..))")
     private void saveComment() {}
 
+    @Pointcut("execution(* com.example.spartaoutsourcing.domain.comment.service.CommentService.update(..))")
+    private void updateComment() {}
+
+    @Pointcut("execution(* com.example.spartaoutsourcing.domain.comment.service.CommentService.delete(..))")
+    private void deleteComment() {}
+
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.auth.service.AuthService.login(..))")
     private void login() {}//
 
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.auth.service.AuthService.register(..))")
     private void register() {}//
 
-    // 작업 로그
-    @Around("saveTask() || updateTask() || deleteTask() || updateTaskStatus()")
-    public Object logTask(ProceedingJoinPoint pjp) throws Throwable {
-        // RequestBody
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-        String requestBody = new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+    HttpServletRequest getHttpServletRequest(){
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    }
 
-        // TaskId 매개변수
+    String getRequestBody(HttpServletRequest request)
+    {
+        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+        return new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+    }
+
+    Long getTaskIdByParameter(ProceedingJoinPoint pjp)
+    {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         String[] paramNames = signature.getParameterNames();
         Object[] args = pjp.getArgs();
@@ -78,6 +87,19 @@ public class ActivityLoggingAspect {
                 break;
             }
         }
+
+        return taskId;
+    }
+
+    // 작업 로그
+    @Around("saveTask() || updateTask() || deleteTask() || updateTaskStatus()")
+    public Object logTask(ProceedingJoinPoint pjp) throws Throwable {
+        // RequestBody
+        HttpServletRequest request = getHttpServletRequest();
+        String requestBody = getRequestBody(request);
+
+        // TaskId 매개변수
+        Long taskId = getTaskIdByParameter(pjp);
 
         // UpdateStatus 일 때 기록
         String beforeTaskStatus = "";
@@ -138,24 +160,14 @@ public class ActivityLoggingAspect {
         return result;
     }
 
-    @Around("saveComment()")
+    @Around("saveComment() || updateComment() || deleteComment()")
     public Object logComment(ProceedingJoinPoint pjp) throws Throwable {
-        // TaskId 매개변수
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        String[] paramNames = signature.getParameterNames();
-        Object[] args = pjp.getArgs();
-        Long taskId = 0L;
-        for(int i=0;i<paramNames.length;i++){
-            if(paramNames[i].equals("taskId")){
-                taskId = (Long)args[i];
-                break;
-            }
-        }
-
         // RequestBody
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-        String requestBody = new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+        HttpServletRequest request = getHttpServletRequest();
+        String requestBody = getRequestBody(request);
+
+        // TaskId 매개변수
+        Long taskId = getTaskIdByParameter(pjp);
 
         // Proceed
         Object result = pjp.proceed();
@@ -165,8 +177,16 @@ public class ActivityLoggingAspect {
         User user = userService.getUserById(userId);
         ActivityType type = null;
         String description = switch (pjp.getSignature().getName()) {
-            case "saveComment" -> {
+            case SAVE_METHOD_NAME -> {
                 type = ActivityType.COMMENT_CREATED;
+                yield type.getDescription();
+            }
+            case UPDATE_METHOD_NAME -> {
+                type = ActivityType.COMMENT_UPDATED;
+                yield type.getDescription();
+            }
+            case DELETE_METHOD_NAME -> {
+                type = ActivityType.COMMENT_DELETED;
                 yield type.getDescription();
             }
             default -> "";

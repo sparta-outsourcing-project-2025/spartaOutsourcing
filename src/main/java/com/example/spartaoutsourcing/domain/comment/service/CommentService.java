@@ -106,8 +106,8 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse updateComment(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
-        Task task = taskService.getTesKById(taskId);
+    public CommentResponse update(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
+        Task task = taskService.getTaskById(taskId);
 
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
 
@@ -136,7 +136,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(AuthUserRequest authUserRequest, Long commentId) {
+    public void delete(AuthUserRequest authUserRequest, Long commentId, Long taskId) {
 
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
                 () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
