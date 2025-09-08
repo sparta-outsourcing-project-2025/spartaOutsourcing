@@ -39,10 +39,10 @@ public class ActivityLoggingAspect {
     private final TaskService taskService;
 
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.task.service.TaskService.save(..))")
-    private void saveTask() {}//
+    private void saveTask() {}
 
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.task.service.TaskService.update(..))")
-    private void updateTask() {}//
+    private void updateTask() {}
 
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.task.service.TaskService.delete(..))")
     private void deleteTask(){}
@@ -60,36 +60,10 @@ public class ActivityLoggingAspect {
     private void deleteComment() {}
 
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.auth.service.AuthService.login(..))")
-    private void login() {}//
+    private void login() {}
 
     @Pointcut("execution(* com.example.spartaoutsourcing.domain.auth.service.AuthService.register(..))")
-    private void register() {}//
-
-    HttpServletRequest getHttpServletRequest(){
-        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-    }
-
-    String getRequestBody(HttpServletRequest request)
-    {
-        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-        return new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
-    }
-
-    Long getTaskIdByParameter(ProceedingJoinPoint pjp)
-    {
-        MethodSignature signature = (MethodSignature) pjp.getSignature();
-        String[] paramNames = signature.getParameterNames();
-        Object[] args = pjp.getArgs();
-        Long taskId = 0L;
-        for (int i = 0; i < paramNames.length; i++) {
-            if (paramNames[i].equals("taskId")) {
-                taskId = (Long) args[i];
-                break;
-            }
-        }
-
-        return taskId;
-    }
+    private void register() {}
 
     // 작업 로그
     @Around("saveTask() || updateTask() || deleteTask() || updateTaskStatus()")
@@ -211,18 +185,17 @@ public class ActivityLoggingAspect {
     @AfterReturning(pointcut = "login()")
     public void logLogin(JoinPoint jp) throws Throwable {
         // RequestBody
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-        String requestBody = new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+        HttpServletRequest request = getHttpServletRequest();
+        String requestBody = getRequestBody(request);
 
         // GetUser
         JSONParser jsonParser = new JSONParser();
         JSONObject json = (JSONObject) jsonParser.parse(requestBody);
         String username = json.get("username").toString();
         User user = userService.getUserByUsername(username);
-
         Long userId = user.getId();
 
+        // 로그 출력
         log.info("[{}] UserID:{} | MethodName:{}\nrequestBody : \n{}\nresult : 로그인 했습니다.",
                 LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME),
                 userId,
@@ -234,18 +207,44 @@ public class ActivityLoggingAspect {
     @AfterReturning(pointcut = "register()", returning = "result")
     public void logRegister(JoinPoint jp, Object result) throws Throwable {
         // RequestBody
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
-        String requestBody = new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+        HttpServletRequest request = getHttpServletRequest();
+        String requestBody = getRequestBody(request);
 
         // Result
         RegisterResponse registerResponse = (RegisterResponse) result;
         Long userId = registerResponse.getId();
 
+        // 로그 출력
         log.info("[{}] UserID:{} | MethodName:{}\nrequestBody : \n{}\nresult : 회원 가입 했습니다.",
                 registerResponse.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
                 userId,
                 jp.getSignature().getName(),
                 requestBody);
+    }
+
+    HttpServletRequest getHttpServletRequest(){
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    }
+
+    String getRequestBody(HttpServletRequest request)
+    {
+        ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
+        return new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+    }
+
+    Long getTaskIdByParameter(ProceedingJoinPoint pjp)
+    {
+        MethodSignature signature = (MethodSignature) pjp.getSignature();
+        String[] paramNames = signature.getParameterNames();
+        Object[] args = pjp.getArgs();
+        Long taskId = 0L;
+        for (int i = 0; i < paramNames.length; i++) {
+            if (paramNames[i].equals("taskId")) {
+                taskId = (Long) args[i];
+                break;
+            }
+        }
+
+        return taskId;
     }
 }
