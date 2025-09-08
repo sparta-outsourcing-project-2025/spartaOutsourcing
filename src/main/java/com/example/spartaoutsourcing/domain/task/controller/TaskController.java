@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.*;
 
 import com.example.spartaoutsourcing.common.annotation.Auth;
 import com.example.spartaoutsourcing.common.consts.SuccessCode;
@@ -68,14 +67,14 @@ public class TaskController {
 	@PatchMapping("/tasks/{taskId}/status")
 	public GlobalApiResponse<TaskResponse> statusUpdate(@Auth AuthUserRequest authUserRequest, @PathVariable Long taskId,
 		@Valid @RequestBody TaskStatusUpdateRequest taskStatusUpdateRequest) {
-		TaskResponse statusUpdate = taskService.statusUpdate(authUserRequest, taskId, taskStatusUpdateRequest);
+		TaskResponse statusUpdate = taskService.updateStatus(authUserRequest, taskId, taskStatusUpdateRequest);
 
 		return GlobalApiResponse.of(SuccessCode.TASK_STATUS_UPDATED, statusUpdate);
 	}
 
 	@GetMapping("/users")
 	public GlobalApiResponse<List<TaskUserInfoResponse>> getTaskUserInfo(@Auth AuthUserRequest authUserRequest) {
-		List<TaskUserInfoResponse> taskUserInfo = taskService.getTaskUserInfo(authUserRequest);
+		List<TaskUserInfoResponse> taskUserInfo = taskService.getTaskUserInfo();
 
 		return GlobalApiResponse.of(SuccessCode.OK, taskUserInfo);
 	}

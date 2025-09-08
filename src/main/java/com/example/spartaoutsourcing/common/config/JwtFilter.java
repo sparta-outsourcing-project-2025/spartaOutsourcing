@@ -11,8 +11,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,26 +24,29 @@ import java.util.Map;
 import java.util.HashMap;
 
 @Slf4j
-@Order(2)
 @RequiredArgsConstructor
-public class JwtFilter implements Filter {
+public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
 
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        HttpServletRequest reqToUse = request;
+        if (!(request instanceof ContentCachingRequestWrapper)) {
+            reqToUse = new ContentCachingRequestWrapper(request);
+        }
 
         /** 특정 URL 필터 제외
          *  로그인, 회원가입 요청은 JWT 인증 없이 통과
          */
-        String url = httpRequest.getRequestURI();
+        String url = reqToUse.getRequestURI();
+
+        // 회원가입/로그인 예외
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
-            chain.doFilter(request, response);
+            chain.doFilter(reqToUse, response);
             return;
         }
 
@@ -50,9 +54,9 @@ public class JwtFilter implements Filter {
          * Authorization: Bearer 토큰  헤더가 없으면
          * 401 UNAUTHORIZED 발생
          */
-        String bearerJwt = httpRequest.getHeader("Authorization");
+        String bearerJwt = reqToUse.getHeader("Authorization");
         if (bearerJwt == null || bearerJwt.isEmpty()) {
-            sendErrorResponse(httpResponse, HttpStatus.UNAUTHORIZED, "인증 헤더 누락");
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "인증 헤더 누락");
             return;
         }
 
@@ -61,7 +65,7 @@ public class JwtFilter implements Filter {
             Claims claims = jwtUtil.extractClaims(jwt);
 
             if (claims == null) {
-                sendErrorResponse(httpResponse, HttpStatus.UNAUTHORIZED, "Claims 추출 실패");
+                sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "Claims 추출 실패");
                 return;
             }
 
@@ -77,26 +81,25 @@ public class JwtFilter implements Filter {
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            httpRequest.setAttribute("userId", userId);
-            httpRequest.setAttribute("email", email);
-            httpRequest.setAttribute("userRole", userRole);
-
+            reqToUse.setAttribute("userId", userId);
+            reqToUse.setAttribute("email", email);
+            reqToUse.setAttribute("userRole", userRole);
 
             // 관리자 권한 체크
             if (url.startsWith("/admin") && !UserRole.ADMIN.equals(userRole)) {
-                sendErrorResponse(httpResponse, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
+                sendErrorResponse(response, HttpStatus.FORBIDDEN, "접근 권한이 없습니다.");
                 return;
             }
 
-            chain.doFilter(request, response);
+            chain.doFilter(reqToUse, response);
 
         } catch (ExpiredJwtException e) {
-            sendErrorResponse(httpResponse, HttpStatus.UNAUTHORIZED, "토큰 만료");
+            sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "토큰 만료");
         } catch (SecurityException | MalformedJwtException | UnsupportedJwtException e) {
-            sendErrorResponse(httpResponse, HttpStatus.BAD_REQUEST, "유효하지 않은 토큰");
+            sendErrorResponse(response, HttpStatus.BAD_REQUEST, "유효하지 않은 토큰");
         } catch (Exception e) {
             log.error("예상치 못한 오류: URI={}", url, e);
-            sendErrorResponse(httpResponse, HttpStatus.INTERNAL_SERVER_ERROR, "서버 처리 중 오류 발생");
+            sendErrorResponse(response, HttpStatus.INTERNAL_SERVER_ERROR, "서버 처리 중 오류 발생");
         }
     }
 

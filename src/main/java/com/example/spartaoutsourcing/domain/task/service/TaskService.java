@@ -44,12 +44,15 @@ public class TaskService {
 	public TaskResponse save(AuthUserRequest authUserRequest, TaskRequest taskRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
+		User getAssignee = userService.getUserById(taskRequest.getAssigneeId());
+
 		Task task = Task.of(taskRequest.getTitle(), taskRequest.getDescription(), TaskStatus.TODO,
-			taskRequest.getDueDate(), taskRequest.getPriority(), user);
+			taskRequest.getDueDate(), taskRequest.getPriority(), user, getAssignee);
 
 		taskRepository.save(task);
 
-		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
+		Assignee assignee = Assignee.of(getAssignee.getId(), getAssignee.getUsername(), getAssignee.getName(),
+			getAssignee.getEmail());
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
@@ -65,9 +68,12 @@ public class TaskService {
 	public TaskResponse getTask(AuthUserRequest authUserRequest, Long taskId) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = getTesKById(taskId);
+		Task task = getTaskById(taskId);
 
-		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
+		User getAssignee = task.getAssignee();
+
+		Assignee assignee = Assignee.of(getAssignee.getId(), getAssignee.getUsername(), getAssignee.getName(),
+			getAssignee.getEmail());
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
@@ -76,14 +82,16 @@ public class TaskService {
 	public TaskResponse update(AuthUserRequest authUserRequest, Long taskId, TaskUpdateRequest taskUpdateRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = getTesKById(taskId);
+		Task task = getTaskById(taskId);
+
+		User newAssignee = userService.getUserById(taskUpdateRequest.getAssigneeId());
 
 		task.update(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), taskUpdateRequest.getTaskStatus(),
-			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority());
+			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority(), newAssignee);
 
 		taskRepository.save(task);
 
-		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
+		Assignee assignee = Assignee.of(newAssignee.getId(), newAssignee.getUsername(), newAssignee.getName(), newAssignee.getEmail());
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
@@ -93,6 +101,7 @@ public class TaskService {
 	 * Task 전체 목록 조회
 	 * 페이지네이션과 검색 기능
 	 * */
+	@Transactional(readOnly = true)
 	public PageResponseDto<TaskResponse> getTasks(Long page, Long size, String status, String search, Long assigneeId) {
 		Long offset = page * size;
 		Long limit = size;
@@ -110,14 +119,17 @@ public class TaskService {
 	 * Task 상태 업데이트
 	 * status의 ENUM값 변경
 	 * **/
-	public TaskResponse statusUpdate(AuthUserRequest authUserRequest, Long taskId, TaskStatusUpdateRequest taskStatusUpdateRequest) {
+	public TaskResponse updateStatus(AuthUserRequest authUserRequest, Long taskId, TaskStatusUpdateRequest taskStatusUpdateRequest) {
 		User user = userService.getUserById(authUserRequest.getId());
 
-		Task task = getTesKById(taskId);
+		Task task = getTaskById(taskId);
 
 		task.statusUpdate(taskStatusUpdateRequest.getStatus());
 
-		Assignee assignee = Assignee.of(user.getId(), user.getUsername(), user.getName(), user.getEmail());
+		User getAssignee = task.getAssignee();
+
+		Assignee assignee = Assignee.of(getAssignee.getId(), getAssignee.getUsername(), getAssignee.getName(),
+			getAssignee.getEmail());
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
@@ -153,7 +165,7 @@ public class TaskService {
 	 * Task 모든 사용자의 정보를 반환
 	 * **/
 	@Transactional(readOnly = true)
-	public List<TaskUserInfoResponse> getTaskUserInfo(AuthUserRequest authUserRequest) {
+	public List<TaskUserInfoResponse> getTaskUserInfo() {
 		List<User> users = userService.getUsers();
 
 		return users.stream().map(user ->
@@ -173,7 +185,7 @@ public class TaskService {
 	}
 
 	@Transactional(readOnly = true)
-	public Task getTesKById(Long taskId)
+	public Task getTaskById(Long taskId)
 	{
 		return  taskRepository.findById(taskId).orElseThrow(() ->
 			new GlobalException(ErrorCode.TASK_NOT_FOUND));

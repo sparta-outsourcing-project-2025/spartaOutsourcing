@@ -21,7 +21,6 @@ import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardResp
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardStatsProjection;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardTodayTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUpcomingTaskResponse;
-import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUserInfoResponse;
 import com.example.spartaoutsourcing.domain.member.service.MemberService;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
@@ -29,7 +28,6 @@ import com.example.spartaoutsourcing.domain.task.repository.TaskRepository;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
-import com.example.spartaoutsourcing.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
