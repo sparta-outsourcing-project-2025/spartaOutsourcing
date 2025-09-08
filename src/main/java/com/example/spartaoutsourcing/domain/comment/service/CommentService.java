@@ -80,7 +80,7 @@ public class CommentService {
                     root.getCreatedAt(),
                     root.getModifiedAt()
             ));
-            comments.addAll(commentRepository.findAllByParentIdOrderByCreatedAtAsc(root.getId())
+            comments.addAll(commentRepository.findAllByParentIdAndDeletedAtIsNullOrderByCreatedAtAsc(root.getId())
                     .stream()
                     .map(c -> CommentResponse.of(
                             c.getId(),
@@ -100,7 +100,7 @@ public class CommentService {
                     .toList()
             );
         }
-        Long totalElements = commentRepository.countAllByTaskId(taskId);
+        Long totalElements = commentRepository.countAllByTaskIdAndDeletedAtIsNull(taskId);
         int totalPage= (int)Math.ceil((double)totalElements / size);
         return PageResponseDto.of(comments, totalElements, totalPage, size, page);
     }
@@ -108,7 +108,9 @@ public class CommentService {
     @Transactional
     public CommentResponse updateComment(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
         Task task = taskService.getTesKById(taskId);
-        Comment comment = commentRepository.findById(commentId).orElseThrow(
+
+        Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
+
                 () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
         );
         if (!comment.getUser().getId().equals(authUserRequest.getId())) {
@@ -135,7 +137,11 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(AuthUserRequest authUserRequest, Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow( () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND));
+
+        Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
+                () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
+        );
+
         if (!comment.getUser().getId().equals(authUserRequest.getId())) {
             throw new GlobalException(ErrorCode.FORBIDDEN);
         }
@@ -144,7 +150,7 @@ public class CommentService {
             return;
         }
         comment.delete();
-        List<Comment> comments = commentRepository.findAllByParentId(comment.getId());
+        List<Comment> comments = commentRepository.findAllByParentIdAndDeletedAtIsNull(comment.getId());
         for (Comment c : comments) {
             c.delete();
         }
