@@ -29,8 +29,7 @@ public class ActivityService {
     private final UserService userService;
 
     @Transactional
-    public Activity save(ActivityType type, User user, Long taskId, String description){
-        Activity activity = Activity.of(type, user, taskId, description);
+    public Activity save(Activity activity){
         return activitiesRepository.save(activity);
     }
 
@@ -49,17 +48,17 @@ public class ActivityService {
         Long task_id = null;
 
         try{
-        if(startDate != null)
-            startDateTime = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay();
+            if(startDate != null)
+                startDateTime = LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE).atStartOfDay();
 
-        if(endDate != null)
-            endDateTime = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE).atTime(LocalTime.MAX);
+            if(endDate != null)
+                endDateTime = LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE).atTime(LocalTime.MAX);
 
-        if(userId != null)
-            user = userService.getUserById(Long.parseLong(userId));
+            if(userId != null)
+                user = userService.getUserById(Long.parseLong(userId));
 
-        if(taskId != null)
-            task_id = Long.parseLong(taskId);
+            if(taskId != null)
+                task_id = Long.parseLong(taskId);
         }catch(Exception e){
             throw new GlobalException(ErrorCode.INVALID_REQUEST_PARAMETER);
         }

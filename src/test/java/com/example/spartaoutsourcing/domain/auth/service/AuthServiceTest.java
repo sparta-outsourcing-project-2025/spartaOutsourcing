@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.auth.service;
+package com.example.spartaoutsourcing.domain.auth.service;
 
 import com.example.spartaoutsourcing.common.config.JwtUtil;
 import com.example.spartaoutsourcing.common.config.PasswordEncoder;
