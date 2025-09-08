@@ -43,27 +43,33 @@ public class Task extends AuditableEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	private Task(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate, TaskPriority taskPriority, User user) {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "assignee_id")
+	private User assignee;
+
+	private Task(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate, TaskPriority taskPriority, User user, User assignee) {
 		this.title = title;
 		this.description = description;
 		this.taskStatus = taskStatus;
 		this.dueDate = dueDate;
 		this.taskPriority = taskPriority;
 		this.user = user;
+		this.assignee = assignee;
 	}
 
 	public static Task of(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate,
-		TaskPriority taskPriority, User user) {
-		return new Task(title, description, taskStatus, dueDate, taskPriority, user);
+		TaskPriority taskPriority, User user, User assignee) {
+		return new Task(title, description, taskStatus, dueDate, taskPriority, user, assignee);
 	}
 
 	public void update(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate,
-		TaskPriority taskPriority) {
+		TaskPriority taskPriority, User assignee) {
 		this.title = title;
 		this.description = description;
 		this.taskStatus = taskStatus;
 		this.dueDate = dueDate;
 		this.taskStatus = taskStatus;
+		this.assignee = assignee;
 	}
 
 	public void statusUpdate(TaskStatus taskStatus) {

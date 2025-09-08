@@ -103,7 +103,7 @@ public class AuthServiceTest {
         ReflectionTestUtils.setField(user, "id", 1L);
 
         // Mocking
-        when(userService.findByUsername(username)).thenReturn(user);
+        when(userService.getUserByUsername(username)).thenReturn(user);
         when(userService.existsUserByUsername(username)).thenReturn(true);
         when(passwordEncoder.matches(rawPassword, encodedPassword)).thenReturn(true);
         when(jwtUtil.createToken(1L, username, UserRole.USER)).thenReturn("mockToken");
