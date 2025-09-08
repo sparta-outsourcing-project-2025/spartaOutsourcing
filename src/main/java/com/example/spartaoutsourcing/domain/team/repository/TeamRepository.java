@@ -21,5 +21,9 @@ public interface TeamRepository extends JpaRepository <Team, Long> {
 
     Optional<Team> findFirstByOrderByCreatedAtAsc();
 
-    List<User> findAvailableUsers(Long teamId);
+
+    @Query("SELECT u FROM User u " +
+            "WHERE u.deletedAt IS NULL AND NOT EXISTS (" +
+            "SELECT 1 FROM Member m WHERE m.user = u AND m.team.id = :teamId)")
+    List<User> findAvailableUsers(@Param("teamId") Long teamId);
 }
