@@ -19,6 +19,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
         LEFT JOIN users u ON u.id = c.user_id
         WHERE c.task_id = :taskId
             AND c.parent_id IS NULL
+            AND c.deleted_at IS NULL
         ORDER BY c.created_at DESC
         LIMIT :size OFFSET :offset
     """,  nativeQuery = true)
@@ -33,6 +34,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
         LEFT JOIN users u ON u.id = c.user_id
         WHERE c.task_id = :taskId
             AND c.parent_id IS NULL
+            AND c.deleted_at IS NULL
         ORDER BY c.created_at ASC
         LIMIT :size OFFSET :offset
     """, nativeQuery = true)
@@ -42,14 +44,12 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             @Param("offset")  Long offset);
 
     @EntityGraph(attributePaths = {"user"})
-    List<Comment> findAllByParentIdOrderByCreatedAtAsc(Long parentId);
+    List<Comment> findAllByParentIdAndDeletedAtIsNullOrderByCreatedAtAsc(Long parentId);
 
-    Long countAllByTaskId(Long taskId);
+    Long countAllByTaskIdAndDeletedAtIsNull(Long taskId);
 
-    @Override
-    @NonNull
     @EntityGraph(attributePaths = {"user","parent"})
-    Optional<Comment> findById(@NonNull Long id);
+    Optional<Comment> findByIdAndDeletedAtIsNull(@NonNull Long id);
 
-    List<Comment> findAllByParentId(Long parentId);
+    List<Comment> findAllByParentIdAndDeletedAtIsNull(Long parentId);
 }
