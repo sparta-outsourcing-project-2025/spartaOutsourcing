@@ -15,7 +15,7 @@ public class DashboardActivitiesResponse {
 	private Long id;
 	private Long userId;
 	private DashboardUserInfoResponse user;
-	private ActivityType action;
+	private String action;
 	private String targetType;
 	private Long targetId;
 	private String description;
@@ -37,6 +37,6 @@ public class DashboardActivitiesResponse {
 	public static DashboardActivitiesResponse of(Long id, Long userId, DashboardUserInfoResponse user,
 		ActivityType activityType, String targetType, Long targetId, String description, LocalDateTime createdAt) {
 
-		return new DashboardActivitiesResponse(id, userId, user, activityType, targetType, targetId, description, createdAt);
+		return new DashboardActivitiesResponse(id, userId, user, activityType.getAction(), targetType, targetId, description, createdAt);
 	}
 }
