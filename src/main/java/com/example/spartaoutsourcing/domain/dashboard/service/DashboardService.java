@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import jakarta.validation.constraints.Null;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +21,6 @@ import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardResp
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardStatsProjection;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardTodayTaskResponse;
 import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUpcomingTaskResponse;
-import com.example.spartaoutsourcing.domain.dashboard.dto.response.DashboardUserInfoResponse;
 import com.example.spartaoutsourcing.domain.member.service.MemberService;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.task.enums.TaskStatus;
@@ -30,7 +28,6 @@ import com.example.spartaoutsourcing.domain.task.repository.TaskRepository;
 import com.example.spartaoutsourcing.domain.team.entity.Team;
 import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
-import com.example.spartaoutsourcing.domain.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -130,14 +127,14 @@ public class DashboardService {
 	public PageResponseDto<DashboardActivitiesResponse> getDashboardActivities(long page, long size) {
 		long offset = page * size;
 		long limit = size;
-		// TODO: 수정
-		List<DashboardActivitiesProjection> activityAll = null;
+
+		List<DashboardActivitiesProjection> activityAll = activityRepository.findActivityAll(offset, limit);
 
 		List<DashboardActivitiesResponse> list =
 			activityAll.stream()
 			.map(DashboardActivitiesResponse::from).toList();
-		// TODO: 수정
-		Long totalElements = 0L;
+
+		Long totalElements = activityRepository.countActivityAll();
 
 		int totalPage= (int)Math.ceil((double)totalElements / size);
 
