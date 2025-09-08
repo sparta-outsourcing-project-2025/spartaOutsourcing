@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         HttpServletRequest reqToUse = request;
@@ -39,17 +39,22 @@ public class JwtFilter extends OncePerRequestFilter {
             reqToUse = new ContentCachingRequestWrapper(request);
         }
 
-
+        /** 특정 URL 필터 제외
+         *  로그인, 회원가입 요청은 JWT 인증 없이 통과
+         */
         String url = reqToUse.getRequestURI();
 
         // 회원가입/로그인 예외
         if (url.equals("/api/auth/register") || url.equals("/api/auth/login")) {
-            filterChain.doFilter(reqToUse, response);
+            chain.doFilter(reqToUse, response);
             return;
         }
 
+        /**
+         * Authorization: Bearer 토큰  헤더가 없으면
+         * 401 UNAUTHORIZED 발생
+         */
         String bearerJwt = reqToUse.getHeader("Authorization");
-
         if (bearerJwt == null || bearerJwt.isEmpty()) {
             sendErrorResponse(response, HttpStatus.UNAUTHORIZED, "인증 헤더 누락");
             return;
@@ -68,7 +73,6 @@ public class JwtFilter extends OncePerRequestFilter {
             String email = claims.get("email", String.class);
             UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-            // SecurityContext 저장
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                             userId,
@@ -77,10 +81,9 @@ public class JwtFilter extends OncePerRequestFilter {
                     );
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // AuthUserArgumentResolver용 request attribute
-            httpRequest.setAttribute("userId", userId);
-            httpRequest.setAttribute("email", email);
-            httpRequest.setAttribute("userRole", userRole);
+            reqToUse.setAttribute("userId", userId);
+            reqToUse.setAttribute("email", email);
+            reqToUse.setAttribute("userRole", userRole);
 
             // 관리자 권한 체크
             if (url.startsWith("/admin") && !UserRole.ADMIN.equals(userRole)) {

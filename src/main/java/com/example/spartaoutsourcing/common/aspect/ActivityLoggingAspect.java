@@ -67,31 +67,32 @@ public class ActivityLoggingAspect {
         ContentCachingRequestWrapper requestWrapper = (ContentCachingRequestWrapper) request;
         String requestBody = new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
 
-        // Proceed
-        Object result = pjp.proceed();
-
         // TaskId 매개변수
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         String[] paramNames = signature.getParameterNames();
         Object[] args = pjp.getArgs();
         Long taskId = 0L;
-        if(pjp.getSignature().getName().equals(SAVE_METHOD_NAME)){
-            taskId = ((TaskResponse) result).getId();
-        }
-        else {
-            for (int i = 0; i < paramNames.length; i++) {
-                if (paramNames[i].equals("taskId")) {
-                    taskId = (Long) args[i];
-                    break;
-                }
+        for (int i = 0; i < paramNames.length; i++) {
+            if (paramNames[i].equals("taskId")) {
+                taskId = (Long) args[i];
+                break;
             }
         }
 
-        // TaskStatus 일 때 기록
+        // UpdateStatus 일 때 기록
         String beforeTaskStatus = "";
-        if(pjp.getSignature().getName().equals("statusUpdate"))
-            beforeTaskStatus = taskService.getTaskById(taskId).getTaskStatus().toString();
+        if(pjp.getSignature().getName().equals(UPDATE_STATUS_METHOD_NAME)) {
 
+            beforeTaskStatus = taskService.getTaskById(taskId).getTaskStatus().toString();
+        }
+
+        // Proceed
+        Object result = pjp.proceed();
+
+        // Save는 매개변수 없음
+        if(pjp.getSignature().getName().equals(SAVE_METHOD_NAME)){
+            taskId = ((TaskResponse) result).getId();
+        }
 
         // 로그 정보
         Long userId = (Long) request.getAttribute("userId");
