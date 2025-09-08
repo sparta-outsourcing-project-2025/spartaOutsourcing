@@ -18,13 +18,13 @@ public class SearchController {
 private final SearchService searchService;
 
     @GetMapping("/search")
-    public GlobalApiResponse<IntegratedSearchResponse> integratedSearch(@RequestParam(name = "q") String keyword) {
+    public GlobalApiResponse<IntegratedSearchResponse> integratedSearch(@RequestParam("query") String keyword) {
             return GlobalApiResponse.of(SuccessCode.SUCCESS_SEARCH, searchService.getIntegratedSearchResponseByKeyword(keyword));
     }
 
     @GetMapping("/tasks/search")
     public GlobalApiResponse<PageResponseDto<TaskContentSearchResponse>> taskPageSearch(
-            @RequestParam(name = "q") String keyword,
+            @RequestParam("query") String keyword,
             @PageableDefault Pageable pageable) {
         return GlobalApiResponse.of(SuccessCode.SUCCESS_SEARCH_TASK, searchService.getTaskPageSearchResponse(keyword, pageable));
     }
