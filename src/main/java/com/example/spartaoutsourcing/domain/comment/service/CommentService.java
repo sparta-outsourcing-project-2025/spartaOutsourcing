@@ -34,7 +34,7 @@ public class CommentService {
     @Transactional
     public CommentResponse save(AuthUserRequest authUserRequest, long taskId, CommentSaveRequest request) {
         User user = userService.getUserById(authUserRequest.getId());
-        Task task = taskService.getTesKById(taskId);
+        Task task = taskService.getTaskById(taskId);
         Comment parentComment = null;
         if (request.getParentId() != null) {
             parentComment = commentRepository.findById(request.getParentId()).orElseThrow(
@@ -59,9 +59,11 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
+
         taskService.getTesKById(taskId);
         long offset = page * size;
         List<CommentProjection> rootComments = sort.equalsIgnoreCase("oldest")
+
                 ? commentRepository.findAllByTaskIdOrderByAsc(taskId, size, offset) : commentRepository.findAllByTaskIdOrderByDesc(taskId, size, offset);
 
         List<CommentResponse> comments = new ArrayList<>();
@@ -107,8 +109,8 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse updateComment(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
-        Task task = taskService.getTesKById(taskId);
+    public CommentResponse update(AuthUserRequest authUserRequest, Long commentId, Long taskId, CommentUpdateRequest request) {
+        Task task = taskService.getTaskById(taskId);
 
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
 
@@ -137,7 +139,7 @@ public class CommentService {
     }
 
     @Transactional
-    public void deleteComment(AuthUserRequest authUserRequest, Long commentId) {
+    public void delete(AuthUserRequest authUserRequest, Long commentId, Long taskId) {
 
         Comment comment = commentRepository.findByIdAndDeletedAtIsNull(commentId).orElseThrow(
                 () -> new GlobalException(ErrorCode.COMMENT_NOT_FOUND)
