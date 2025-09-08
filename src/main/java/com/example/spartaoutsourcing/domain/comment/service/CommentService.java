@@ -6,6 +6,7 @@ import com.example.spartaoutsourcing.common.dto.PageResponseDto;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
 import com.example.spartaoutsourcing.domain.comment.dto.request.CommentSaveRequest;
 import com.example.spartaoutsourcing.domain.comment.dto.request.CommentUpdateRequest;
+import com.example.spartaoutsourcing.domain.comment.dto.response.CommentProjection;
 import com.example.spartaoutsourcing.domain.comment.dto.response.CommentResponse;
 import com.example.spartaoutsourcing.domain.comment.entity.Comment;
 import com.example.spartaoutsourcing.domain.comment.repository.CommentRepository;
@@ -59,26 +60,26 @@ public class CommentService {
     @Transactional(readOnly = true)
     public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
         taskService.getTesKById(taskId);
-        long offset = (page-1) * size;
-        List<Comment> rootComments = sort.equalsIgnoreCase("oldest")
+        long offset = page * size;
+        List<CommentProjection> rootComments = sort.equalsIgnoreCase("oldest")
                 ? commentRepository.findAllByTaskIdOrderByAsc(taskId, size, offset) : commentRepository.findAllByTaskIdOrderByDesc(taskId, size, offset);
 
         List<CommentResponse> comments = new ArrayList<>();
-        for (Comment root : rootComments) {
+        for (CommentProjection root : rootComments) {
             comments.add(CommentResponse.of(
                     root.getId(),
                     root.getContent(),
                     taskId,
                     UserCommentResponse.of(
-                            root.getUser().getId(),
-                            root.getUser().getUsername(),
-                            root.getUser().getName(),
-                            root.getUser().getEmail(),
-                            root.getUser().getRole().toString()
+                            root.getUserId(),
+                            root.getUserName(),
+                            root.getName(),
+                            root.getEmail(),
+                            root.getRole()
                     ),
                     null,
                     root.getCreatedAt(),
-                    root.getModifiedAt()
+                    root.getUpdatedAt()
             ));
             comments.addAll(commentRepository.findAllByParentIdAndDeletedAtIsNullOrderByCreatedAtAsc(root.getId())
                     .stream()
