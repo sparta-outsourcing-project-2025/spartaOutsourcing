@@ -38,7 +38,6 @@ public class TeamService {
         Team team = Team.of(teamRequest.getName(), teamRequest.getDescription());
         teamRepository.save(team);
 
-
         return TeamResponse.of(
                 team.getId(),
                 team.getName(),
