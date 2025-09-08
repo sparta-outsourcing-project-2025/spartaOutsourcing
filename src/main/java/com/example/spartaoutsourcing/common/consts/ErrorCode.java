@@ -17,10 +17,10 @@ public enum ErrorCode {
     NOT_FOUND("데이터가 없습니다.", HttpStatus.NOT_FOUND),
     FORBIDDEN("권한이 없습니다.", HttpStatus.FORBIDDEN),
 
-    // 유저
+    // user
     USER_NOT_FOUND("유저를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
 
-    // 어노테이션
+    // annotation
     AUTH_ANNOTATION_MISMATCH_TYPE("@Auth와 AuthUser 타입은 함께 사용되어야 합니다",HttpStatus.INTERNAL_SERVER_ERROR),
 
     // task
@@ -35,11 +35,14 @@ public enum ErrorCode {
     // member
     USER_ALREADY_TEAM_MEMBER("사용자가 이미 팀 멤버입니다",  HttpStatus.BAD_REQUEST),
 
-    //Dashboard
+    // dashboard
     DASHBOARD_TEAM_NOT_FOUND("팀을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
 
     // comment
-    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND ),;
+    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND ),
+
+    // activity
+    INVALID_REQUEST_PARAMETER("잘못된 요청 파라미터입니다", HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus httpStatus;

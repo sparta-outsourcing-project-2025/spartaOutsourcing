@@ -27,7 +27,6 @@ public class AuthService {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final MemberService memberService;
-    private final MemberRepository memberRepository;
 
     @Transactional
     public RegisterResponse register(RegisterRequest registerRequest) {
@@ -60,7 +59,7 @@ public class AuthService {
 
     @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
-        User user = userService.findByUsername(loginRequest.getUsername());
+        User user = userService.getUserByUsername(loginRequest.getUsername());
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword()) || !userService.existsUserByUsername(loginRequest.getUsername())) {
             throw new GlobalException(ErrorCode.LOGIN_CHECKED);
