@@ -74,7 +74,7 @@ public class TaskController {
 
 	@GetMapping("/users")
 	public GlobalApiResponse<List<TaskUserInfoResponse>> getTaskUserInfo(@Auth AuthUserRequest authUserRequest) {
-		List<TaskUserInfoResponse> taskUserInfo = taskService.getTaskUserInfo(authUserRequest);
+		List<TaskUserInfoResponse> taskUserInfo = taskService.getTaskUserInfo();
 
 		return GlobalApiResponse.of(SuccessCode.OK, taskUserInfo);
 	}
