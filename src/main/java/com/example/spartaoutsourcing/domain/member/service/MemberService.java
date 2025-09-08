@@ -75,10 +75,12 @@ public class MemberService {
      */
     @Transactional
     public TeamResponse removeMember(Long teamId, Long userId) {
-        Team team = teamRepository.findById(teamId).orElse(null);
+        Team team = teamRepository.findById(teamId)
+                .orElseThrow(() -> new GlobalException(ErrorCode.TEAM_NOT_FOUND));
 
         Member member = memberRepository.findByTeamIdAndUserId(teamId, userId)
-                .orElse(null);
+                .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_FOUND));
+
 
         if (member != null) {
             team.getMembers().remove(member);
