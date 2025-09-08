@@ -1,4 +1,4 @@
-package com.example.spartaoutsourcing.auth;
+package com.example.spartaoutsourcing.auth.service;
 
 import com.example.spartaoutsourcing.common.config.JwtUtil;
 import com.example.spartaoutsourcing.common.config.PasswordEncoder;
@@ -18,10 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
