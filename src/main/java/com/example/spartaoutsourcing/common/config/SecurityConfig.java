@@ -22,32 +22,24 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
-    private final ObjectMapper objectMapper; // 필드 주입
+    private final ObjectMapper objectMapper;
 
+    /** csrf의 경우 jwt기반 api 서버에서는 불필요
+     * 세션은 사용하지 않고, jwt 인증만 수행
+     *
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                // CSRF 비활성화 (JWT 사용시 불필요)
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // CORS 설정
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // 세션 사용 안함 (JWT 사용)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // 요청별 인증 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
-                // 로그인 폼, 기본 HTTP 인증 비활성화
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
-
-                // JWT 필터 등록
                 .addFilterBefore(new JwtFilter(jwtUtil, objectMapper), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
