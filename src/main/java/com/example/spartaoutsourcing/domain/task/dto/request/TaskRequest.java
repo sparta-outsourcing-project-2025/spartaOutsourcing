@@ -6,9 +6,11 @@ import com.example.spartaoutsourcing.domain.task.enums.TaskPriority;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class TaskRequest {
 
 	@NotBlank(message = "제목은 필수입니다.")
