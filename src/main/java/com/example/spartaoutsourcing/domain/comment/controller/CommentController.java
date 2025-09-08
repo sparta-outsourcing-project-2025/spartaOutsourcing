@@ -45,15 +45,16 @@ public class CommentController {
             @PathVariable("taskId") Long taskId,
             @Valid @RequestBody CommentUpdateRequest request
     ) {
-        return GlobalApiResponse.of(SuccessCode.COMMENT_UPDATED, commentService.updateComment(authUserRequest, commentId, taskId, request));
+        return GlobalApiResponse.of(SuccessCode.COMMENT_UPDATED, commentService.update(authUserRequest, commentId, taskId, request));
     }
 
     @DeleteMapping("/api/tasks/{taskId}/comments/{commentId}")
     public GlobalApiResponse<Void> deleteComment(
             @Auth AuthUserRequest authUserRequest,
-            @PathVariable("commentId") Long commentId
+            @PathVariable("commentId") Long commentId,
+            @PathVariable("taskId") Long taskId
     ) {
-        commentService.deleteComment(authUserRequest, commentId);
+        commentService.delete(authUserRequest, commentId, taskId);
         return GlobalApiResponse.of(SuccessCode.COMMENT_DELETED,null);
     }
 }

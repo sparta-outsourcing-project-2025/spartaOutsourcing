@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.Null;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -129,14 +130,14 @@ public class DashboardService {
 	public PageResponseDto<DashboardActivitiesResponse> getDashboardActivities(long page, long size) {
 		long offset = page * size;
 		long limit = size;
-
-		List<DashboardActivitiesProjection> activityAll = activityRepository.findActivityAll(offset, limit);
+		// TODO: 수정
+		List<DashboardActivitiesProjection> activityAll = null;
 
 		List<DashboardActivitiesResponse> list =
 			activityAll.stream()
 			.map(DashboardActivitiesResponse::from).toList();
-
-		Long totalElements = activityRepository.countActivityAll();
+		// TODO: 수정
+		Long totalElements = 0L;
 
 		int totalPage= (int)Math.ceil((double)totalElements / size);
 
