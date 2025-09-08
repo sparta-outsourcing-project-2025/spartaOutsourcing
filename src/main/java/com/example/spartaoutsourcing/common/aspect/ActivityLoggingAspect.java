@@ -121,12 +121,14 @@ public class ActivityLoggingAspect {
         };
 
         // 로그 저장
-        Activity activity = activitiesService.save(type, user, taskId, description);
+        Activity activity = Activity.of(type, user, taskId, description);
+        Activity savedActivity = activitiesService.save(activity);
+        log.info("Caching Check : {}",request.getClass().getName());
 
         // 로그 출력
         log.info("[{}] UserID:{} | MethodName:{}\nrequestBody : \n{}\nresult : {}",
-                activity.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
-                activity.getUser().getId(),
+                savedActivity.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
+                savedActivity.getUser().getId(),
                 pjp.getSignature().getName(),
                 requestBody,
                 description);
@@ -167,12 +169,13 @@ public class ActivityLoggingAspect {
         };
 
         // 로그 저장
-        Activity activity = activitiesService.save(type, user, taskId, description);
+        Activity activity = Activity.of(type, user, taskId, description);
+        Activity savedActivity = activitiesService.save(activity);
 
         // 로그 출력
         log.info("[{}] UserID:{} | MethodName:{}\nrequestBody : \n{}\nresult : {}",
-                activity.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
-                activity.getUser().getId(),
+                savedActivity.getCreatedAt().format(DateTimeFormatter.ISO_DATE_TIME),
+                savedActivity.getUser().getId(),
                 pjp.getSignature().getName(),
                 requestBody,
                 description);
@@ -191,9 +194,10 @@ public class ActivityLoggingAspect {
         // GetUser
         JSONParser jsonParser = new JSONParser();
         JSONObject json = (JSONObject) jsonParser.parse(requestBody);
-        String username = json.get("username").toString();
+        String username =  json.get("username").toString();
         User user = userService.getUserByUsername(username);
         Long userId = user.getId();
+
 
         // 로그 출력
         log.info("[{}] UserID:{} | MethodName:{}\nrequestBody : \n{}\nresult : 로그인 했습니다.",
