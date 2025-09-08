@@ -3,10 +3,7 @@ package com.example.spartaoutsourcing.domain.comment.entity;
 import com.example.spartaoutsourcing.common.entity.AuditableEntity;
 import com.example.spartaoutsourcing.domain.task.entity.Task;
 import com.example.spartaoutsourcing.domain.user.entity.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
+@Table(name = "comments")
 public class Comment extends AuditableEntity {
 
     private String content;
