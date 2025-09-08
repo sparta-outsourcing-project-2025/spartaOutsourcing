@@ -51,8 +51,7 @@ public class CommentController {
     @DeleteMapping("/api/tasks/{taskId}/comments/{commentId}")
     public GlobalApiResponse<Void> deleteComment(
             @Auth AuthUserRequest authUserRequest,
-            @PathVariable("commentId") Long commentId,
-            @PathVariable("taskId") Long taskId
+            @PathVariable("commentId") Long commentId
     ) {
         commentService.delete(authUserRequest, commentId);
         return GlobalApiResponse.of(SuccessCode.COMMENT_DELETED,null);
