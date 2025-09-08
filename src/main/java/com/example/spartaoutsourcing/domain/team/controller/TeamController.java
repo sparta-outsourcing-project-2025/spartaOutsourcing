@@ -18,6 +18,7 @@ import java.util.List;
 public class TeamController {
     private final TeamService teamService;
 
+
     /**
      * 팀 생성
      *
@@ -112,7 +113,6 @@ public class TeamController {
      * @return 해당 팀 멤버 리스트(GlobalApiResponse<List<MemberResponse>>)
      *         성공 시 SuccessCode.TEAM_MEMBERS_RETRIEVED 반환
      */
-
     @GetMapping("/api/teams/{teamId}/members")
     public GlobalApiResponse<List<MemberResponse>> getTeamMembers(
             @PathVariable Long teamId

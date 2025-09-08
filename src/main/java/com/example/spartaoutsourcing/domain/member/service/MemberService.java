@@ -14,8 +14,6 @@ import com.example.spartaoutsourcing.domain.team.repository.TeamRepository;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import com.example.spartaoutsourcing.domain.user.service.UserService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -97,13 +95,6 @@ public class MemberService {
                         .map(MemberResponse::from)
                         .toList()
         );
-    }
-
-    public List<User> getMembersByTeamId(Long teamId) {
-        return memberRepository.findByTeamId(teamId)
-                .stream()
-                .map(Member::getUser)
-                .collect(Collectors.toList());
     }
 
     /**
