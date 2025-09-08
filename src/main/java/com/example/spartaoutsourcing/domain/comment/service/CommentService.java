@@ -60,7 +60,9 @@ public class CommentService {
     @Transactional(readOnly = true)
     public PageResponseDto<CommentResponse> getComments(Long taskId, Long page, Long size, String sort) {
 
+
         taskService.getTaskById(taskId);
+
         long offset = page * size;
         List<CommentProjection> rootComments = sort.equalsIgnoreCase("oldest")
 
