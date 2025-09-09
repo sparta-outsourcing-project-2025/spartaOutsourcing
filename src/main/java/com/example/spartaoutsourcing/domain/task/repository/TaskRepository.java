@@ -58,6 +58,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   		SUM(CASE WHEN t.due_date < current_date() AND t.task_status <> 'COMPLETED' THEN 1 ELSE 0 END) AS overdueTasks,
   		SUM(CASE WHEN current_date() < t.due_date AND t.task_status <> 'COMPLETED' THEN 1 ELSE 0 END) AS myTasksToday
   		FROM tasks t
+  		WHERE t.deleted_at IS NULL
 	""", nativeQuery = true)
 	DashboardStatsProjection findDashboardStats();
 
@@ -70,6 +71,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
   		WHEN DATE(t.due_date) < current_date() THEN 'OVERDUE'
   		END AS taskCategory
   		FROM tasks t
+  		WHERE t.deleted_at IS NULL
   		ORDER BY t.due_date ASC;
 	""", nativeQuery = true)
 	List<DashboardMyTaskProjection> findMyTaskAll();
