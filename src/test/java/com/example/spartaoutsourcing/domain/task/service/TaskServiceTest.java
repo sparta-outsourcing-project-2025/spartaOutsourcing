@@ -53,8 +53,8 @@ class TaskServiceTest {
 		when(projection.getTitle()).thenReturn(task.getTitle());
 		when(projection.getDescription()).thenReturn(task.getDescription());
 		when(projection.getDueDate()).thenReturn(task.getDueDate());
-		when(projection.getPriority()).thenReturn(task.getTaskPriority());
-		when(projection.getStatus()).thenReturn(task.getTaskStatus());
+		when(projection.getTaskPriority()).thenReturn(task.getTaskPriority());
+		when(projection.getTaskStatus()).thenReturn(task.getTaskStatus());
 		when(projection.getAssigneeId()).thenReturn(user.getId());
 		when(projection.getUsername()).thenReturn(user.getUsername());
 		when(projection.getName()).thenReturn(user.getName());
@@ -63,16 +63,6 @@ class TaskServiceTest {
 		when(projection.getUpdatedAt()).thenReturn(task.getModifiedAt());
 		return projection;
 	}
-
-	private User createUser() {
-		User user = User.of("test", "test@test.com", "Test1234!", "테스터", UserRole.USER);
-		return userService.getUserById(user.getId());
-	}
-
-	// private Task createAssignee(User user, User assignee) {
-	// 	Task.of("제목", "설명", TaskStatus.TODO, LocalDateTime.of(2025, 9, 8, 14, 0, 0),
-	// 		TaskPriority.HIGH, user, assignee);
-	// }
 
 	@Test
 	@DisplayName("존재하는 사용자는 작업을 생성할 시 성공적으로 동작한다.")
@@ -103,8 +93,8 @@ class TaskServiceTest {
 		assertNotNull(save);
 		assertEquals("제목", save.getTitle());
 		assertEquals("설명", save.getDescription());
-		assertEquals(TaskStatus.TODO, save.getStatus());
-		assertEquals(TaskPriority.HIGH, save.getPriority());
+		assertEquals(TaskStatus.TODO, save.getTaskStatus());
+		assertEquals(TaskPriority.HIGH, save.getTaskPriority());
 		assertEquals(assigneeId, save.getAssignee().getId());
 	}
 
@@ -166,8 +156,8 @@ class TaskServiceTest {
 		assertNotNull(task.getUser().getId());
 		assertEquals(task.getId(), taskResponse.getId());
 		assertEquals(task.getDescription(), taskResponse.getDescription());
-		assertEquals(task.getTaskStatus(), taskResponse.getStatus());
-		assertEquals(task.getTaskPriority(), taskResponse.getPriority());
+		assertEquals(task.getTaskStatus(), taskResponse.getTaskStatus());
+		assertEquals(task.getTaskPriority(), taskResponse.getTaskPriority());
 		assertEquals(task.getDueDate(), taskResponse.getDueDate());
 	}
 
@@ -213,11 +203,10 @@ class TaskServiceTest {
 		User assignee = User.of("assignee", "assignee@test.com", "assignee1234!", "assignee", UserRole.USER);
 
 		Long taskId = 1L;
-		TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest("제목", "설명", LocalDateTime.of(2025, 9, 8, 14, 0, 0),
-			TaskPriority.HIGH, TaskStatus.TODO, assigneeId);
+		TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest("제목", "설명", LocalDateTime.of(2025, 9, 8, 14, 0, 0), assigneeId);
 
-		Task task = Task.of(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), taskUpdateRequest.getTaskStatus(),
-			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority(), user2, assignee);
+		Task task = Task.of(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), null,
+			taskUpdateRequest.getDueDate(), null, user2, assignee);
 
 		ReflectionTestUtils.setField(task, "id", taskId);
 
@@ -234,8 +223,6 @@ class TaskServiceTest {
 		assertEquals(user2.getName(), task.getUser().getName());
 		assertEquals(taskUpdateRequest.getTitle(), task.getTitle());
 		assertEquals(taskUpdateRequest.getDescription(), task.getDescription());
-		assertEquals(taskUpdateRequest.getPriority(), task.getTaskPriority());
-		assertEquals(taskUpdateRequest.getTaskStatus(), task.getTaskStatus());
 		assertEquals(taskUpdateRequest.getDueDate(), task.getDueDate());
 	}
 
@@ -271,14 +258,14 @@ class TaskServiceTest {
 		assertEquals(2, result.getContent().size());
 		assertEquals(result.getContent().get(0).getTitle(), "제목");
 		assertEquals(result.getContent().get(0).getDescription(), "설명");
-		assertEquals(result.getContent().get(0).getPriority(), TaskPriority.HIGH);
-		assertEquals(result.getContent().get(0).getStatus(), TaskStatus.TODO);
+		assertEquals(result.getContent().get(0).getTaskPriority(), TaskPriority.HIGH);
+		assertEquals(result.getContent().get(0).getTaskStatus(), TaskStatus.TODO);
 		assertEquals(result.getContent().get(0).getDueDate(), LocalDateTime.of(2025, 9, 8, 14, 0, 0));
 
 		assertEquals(result.getContent().get(1).getTitle(), "제목2");
 		assertEquals(result.getContent().get(1).getDescription(), "설명2");
-		assertEquals(result.getContent().get(1).getPriority(), TaskPriority.LOW);
-		assertEquals(result.getContent().get(1).getStatus(), TaskStatus.TODO);
+		assertEquals(result.getContent().get(1).getTaskPriority(), TaskPriority.LOW);
+		assertEquals(result.getContent().get(1).getTaskStatus(), TaskStatus.TODO);
 		assertEquals(result.getContent().get(1).getDueDate(), LocalDateTime.of(2025, 9, 8, 14, 0, 0));
 	}
 
@@ -311,7 +298,7 @@ class TaskServiceTest {
 
 		//then
 		assertNotNull(result);
-		assertEquals(task.getTaskStatus(), result.getStatus());
+		assertEquals(task.getTaskStatus(), result.getTaskStatus());
 	}
 
 	@Test

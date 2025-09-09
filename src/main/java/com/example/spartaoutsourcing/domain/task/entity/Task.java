@@ -62,13 +62,12 @@ public class Task extends AuditableEntity {
 		return new Task(title, description, taskStatus, dueDate, taskPriority, user, assignee);
 	}
 
-	public void update(String title, String description, TaskStatus taskStatus, LocalDateTime dueDate,
-		TaskPriority taskPriority, User assignee) {
+	public void update(String title, String description, LocalDateTime dueDate, User assignee) {
 		this.title = title;
 		this.description = description;
-		this.taskStatus = taskStatus;
+		// this.taskStatus = taskStatus;
 		this.dueDate = dueDate;
-		this.taskStatus = taskStatus;
+		// this.taskStatus = taskStatus;
 		this.assignee = assignee;
 	}
 

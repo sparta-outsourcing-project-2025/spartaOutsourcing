@@ -111,7 +111,7 @@ public class ActivityLoggingAspect {
             }
             case  UPDATE_STATUS_METHOD_NAME -> {
                 type = ActivityType.TASK_STATUS_CHANGED;
-                TaskStatus afterTaskStatus =  ((TaskResponse)result).getStatus();
+                TaskStatus afterTaskStatus =  ((TaskResponse)result).getTaskStatus();
 
                 yield type.getDescription()
                         .replace("{1}", beforeTaskStatus)

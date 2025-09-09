@@ -32,7 +32,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 		t.created_at AS createdAt, t.modified_at AS updatedAt
 		FROM tasks t 
 		LEFT JOIN users u ON u.id = t.user_id
-		WHERE (:status IS NULL OR t.task_status = :status) AND
+		WHERE t.deleted_at IS NULL AND 
+		(:status IS NULL OR t.task_status = :status) AND
 		(:search IS NULL OR t.description LIKE %:search%) AND
 		(:assigneeId IS NULL OR u.id = :assigneeId)
 		LIMIT :size OFFSET :offset;
