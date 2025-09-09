@@ -15,9 +15,9 @@ public interface TaskProjection {
 
 	LocalDateTime getDueDate();
 
-	TaskPriority getPriority();
+	TaskPriority getTaskPriority();
 
-	TaskStatus getStatus();
+	TaskStatus getTaskStatus();
 
 	Long getAssigneeId();
 

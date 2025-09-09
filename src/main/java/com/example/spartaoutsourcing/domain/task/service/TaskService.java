@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.spartaoutsourcing.common.consts.ErrorCode;
 import com.example.spartaoutsourcing.common.dto.AuthUserRequest;
 import com.example.spartaoutsourcing.common.exception.GlobalException;
+import com.example.spartaoutsourcing.domain.activity.service.ActivityService;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskStatusUpdateRequest;
 import com.example.spartaoutsourcing.domain.task.dto.request.TaskUpdateRequest;
@@ -70,10 +71,13 @@ public class TaskService {
 
 		Task task = getTaskById(taskId);
 
-		User getAssignee = task.getAssignee();
+		User assigneeUser = task.getAssignee();
+		if (assigneeUser == null){
+			throw new GlobalException(ErrorCode.ASSIGNEE_NOT_FOUND);
+		}
 
-		Assignee assignee = Assignee.of(getAssignee.getId(), getAssignee.getUsername(), getAssignee.getName(),
-			getAssignee.getEmail());
+		Assignee assignee = Assignee.of(assigneeUser.getId(), assigneeUser.getUsername(), assigneeUser.getName(),
+			assigneeUser.getEmail());
 
 		return TaskResponse.of(task.getId(), task.getTitle(), task.getDescription(), task.getDueDate(),
 			task.getTaskPriority(), task.getTaskStatus(), user.getId(), assignee, task.getCreatedAt(), task.getModifiedAt());
@@ -86,8 +90,8 @@ public class TaskService {
 
 		User newAssignee = userService.getUserById(taskUpdateRequest.getAssigneeId());
 
-		task.update(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(), taskUpdateRequest.getTaskStatus(),
-			taskUpdateRequest.getDueDate(), taskUpdateRequest.getPriority(), newAssignee);
+		task.update(taskUpdateRequest.getTitle(), taskUpdateRequest.getDescription(),
+			taskUpdateRequest.getDueDate(), newAssignee);
 
 		taskRepository.save(task);
 
@@ -111,7 +115,7 @@ public class TaskService {
 		List<TaskResponse> taskResponses = taskAll.stream().map(TaskResponse::from).collect(Collectors.toList());
 
 		Long totalElements = taskRepository.countTasksAll();
-		int totalPage= (int)Math.ceil((double)totalElements / size);
+		int totalPage = (int)Math.ceil((double)totalElements / size);
 		return PageResponseDto.of(taskResponses, totalElements, totalPage, limit, page);
 	}
 

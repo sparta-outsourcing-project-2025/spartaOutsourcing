@@ -49,7 +49,7 @@ public class TaskController {
 
 	@PutMapping("/tasks/{taskId}")
 	public GlobalApiResponse<TaskResponse> update(@Auth AuthUserRequest authUserRequest, @PathVariable Long taskId,
-		@Valid @RequestBody TaskUpdateRequest taskUpdateRequest) {
+		@RequestBody TaskUpdateRequest taskUpdateRequest) {
 		TaskResponse update = taskService.update(authUserRequest, taskId, taskUpdateRequest);
 		return GlobalApiResponse.of(SuccessCode.TASK_UPDATED, update);
 	}

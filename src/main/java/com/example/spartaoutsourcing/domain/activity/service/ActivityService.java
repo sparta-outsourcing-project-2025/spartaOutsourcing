@@ -10,6 +10,8 @@ import com.example.spartaoutsourcing.domain.activity.repository.ActivityReposito
 import com.example.spartaoutsourcing.domain.user.dto.response.UserResponse;
 import com.example.spartaoutsourcing.domain.user.entity.User;
 import com.example.spartaoutsourcing.domain.user.service.UserService;
+
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,7 @@ import java.util.List;
 public class ActivityService {
     private final ActivityRepository activitiesRepository;
     private final UserService userService;
+    private final EntityManager em;
 
     @Transactional
     public Activity save(Activity activity){
