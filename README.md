@@ -1568,6 +1568,9 @@ Content-Type: application/json;
 
 ---
 
+## 테스트 커버리지
+<img width="427" height="131" alt="Image" src="https://github.com/user-attachments/assets/a4730a8a-8d8a-4bca-b666-48f795092db9" />
+
 ## 👥기여자
 
 - [@Lunarltn](https://www.github.com/Lunarltn)
