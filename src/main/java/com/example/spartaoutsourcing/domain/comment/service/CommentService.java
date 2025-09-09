@@ -153,6 +153,7 @@ public class CommentService {
             comment.delete();
             return;
         }
+
         comment.delete();
         List<Comment> comments = commentRepository.findAllByParentIdAndDeletedAtIsNull(comment.getId());
         for (Comment c : comments) {
