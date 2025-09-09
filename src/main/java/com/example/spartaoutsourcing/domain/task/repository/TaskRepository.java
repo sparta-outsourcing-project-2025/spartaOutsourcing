@@ -51,12 +51,13 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
 	@Query(value = """
 		SELECT COUNT(*) AS totalTasks,
-  		SUM(CASE WHEN t.task_status = 'COMPLETED' THEN 1 ELSE 0 END) AS completedTasks,
+  		SUM(CASE WHEN t.task_status = 'DONE' THEN 1 ELSE 0 END) AS completedTasks,
   		SUM(CASE WHEN t.task_status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS inProgressTasks,
   		SUM(CASE WHEN t.task_status = 'TODO' THEN 1 ELSE 0 END) AS todoTasks,
-  		SUM(CASE WHEN t.due_date < current_date() AND t.task_status <> 'COMPLETED' THEN 1 ELSE 0 END) AS overdueTasks,
-  		SUM(CASE WHEN current_date() < t.due_date AND t.task_status <> 'COMPLETED' THEN 1 ELSE 0 END) AS myTasksToday
+  		SUM(CASE WHEN t.due_date < current_date() AND t.task_status <> 'DONE' THEN 1 ELSE 0 END) AS overdueTasks,
+  		SUM(CASE WHEN current_date() < t.due_date AND t.task_status <> 'DONE' THEN 1 ELSE 0 END) AS myTasksToday
   		FROM tasks t
+  		WHERE t.deleted_at IS NULL
 	""", nativeQuery = true)
 	DashboardStatsProjection findDashboardStats();
 
